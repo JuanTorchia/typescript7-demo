@@ -150,6 +150,21 @@
             <strong>~2.3x faster</strong>
           </div>
         </div>
+
+        <div class="terminal-demo">
+          <div class="terminal-head">
+            <div>
+              <span class="metric-label">CLI replay</span>
+              <strong>Public repo benchmark transcript</strong>
+            </div>
+            <button class="copy terminal-button" data-terminal-replay>Replay</button>
+          </div>
+          <pre class="terminal" aria-live="polite"><code id="terminal-output"></code><span class="cursor">█</span></pre>
+          <p class="terminal-note">
+            This is a replay of a measured run. The real benchmark runs in GitHub Actions and
+            uploads <code>benchmark-public-repos.json</code>.
+          </p>
+        </div>
       </section>
 
       <section class="examples">

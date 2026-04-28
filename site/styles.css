@@ -266,6 +266,56 @@ code {
   color: #91e6b8;
 }
 
+.terminal-demo {
+  margin-top: 22px;
+  border: 2px solid var(--line);
+  background: var(--panel);
+  box-shadow: 8px 8px 0 var(--line);
+}
+
+.terminal-head {
+  display: flex;
+  gap: 18px;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 2px solid var(--line);
+  padding: 18px;
+}
+
+.terminal-button {
+  margin-bottom: 0;
+}
+
+.terminal {
+  min-height: 420px;
+  max-height: 520px;
+  margin: 0;
+  border: 0;
+  box-shadow: none;
+}
+
+.terminal code {
+  display: inline;
+}
+
+.cursor {
+  color: #91e6b8;
+  animation: blink 1s steps(1, end) infinite;
+}
+
+.terminal-note {
+  margin: 0;
+  border-top: 2px solid var(--line);
+  padding: 14px 18px;
+  color: var(--muted);
+}
+
+@keyframes blink {
+  50% {
+    opacity: 0;
+  }
+}
+
 .example-grid {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -353,6 +403,11 @@ pre code {
 
   .sample-result {
     grid-template-columns: 1fr;
+  }
+
+  .terminal-head {
+    align-items: stretch;
+    flex-direction: column;
   }
 
   .sample-result > div {
