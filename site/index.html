@@ -14,15 +14,15 @@
     <main>
       <section class="hero">
         <div class="eyebrow">TypeScript 7.0 native preview</div>
-        <h1>How fast would TypeScript 7 check your project?</h1>
+        <h1>Prepare your TypeScript project for TypeScript 7.</h1>
         <p class="lede">
-          Run a reproducible comparison between the current TypeScript compiler and the
-          TypeScript 7 native preview. Start with respected open-source fixtures, then
-          generate a GitHub Actions workflow that runs inside your own repo.
+          A practical migration lab for the TypeScript 7 native preview. See what gets
+          faster, what breaks, which compiler options need attention, and how to run the
+          same check safely inside your own GitHub Actions.
         </p>
         <div class="actions">
-          <a class="button primary" href="#benchmarks">View benchmarks</a>
-          <a class="button secondary" href="#workflow">Generate workflow</a>
+          <a class="button primary" href="#usefulness">Why use this?</a>
+          <a class="button secondary" href="#workflow">Run it on your repo</a>
         </div>
       </section>
 
@@ -30,6 +30,41 @@
         <strong>Beta caveat:</strong>
         TypeScript 7 is still a preview. Results are useful for early signal, but they are
         not final compatibility or performance guarantees.
+      </section>
+
+      <section class="usefulness" id="usefulness">
+        <span class="label">Developer value</span>
+        <h2>Use this before TypeScript 7 becomes your problem.</h2>
+        <div class="value-grid">
+          <article>
+            <strong>Find migration blockers early</strong>
+            <p>
+              Surface removed or deprecated compiler options before a future upgrade turns
+              them into urgent CI failures.
+            </p>
+          </article>
+          <article>
+            <strong>Estimate type-check impact</strong>
+            <p>
+              Compare current TypeScript behavior with the native preview on real
+              type-heavy repositories, not isolated toy snippets.
+            </p>
+          </article>
+          <article>
+            <strong>Build a CI-safe rollout path</strong>
+            <p>
+              Copy a workflow that runs in your repository with read-only permissions and
+              leaves private code inside your GitHub Actions environment.
+            </p>
+          </article>
+          <article>
+            <strong>Track preview changes over time</strong>
+            <p>
+              Because TypeScript 7 is beta, rerunning the same pinned checks gives you a
+              useful signal as the compiler changes.
+            </p>
+          </article>
+        </div>
       </section>
 
       <section class="grid" id="open-source">
@@ -273,6 +308,53 @@ TS5101: baseUrl is deprecated
 
 TS5108: moduleResolution=node10 has been removed
 TS5102: baseUrl has been removed</code></pre>
+          </article>
+        </div>
+      </section>
+
+      <section class="decision-guide">
+        <span class="label">Decision guide</span>
+        <h2>What should you do with the result?</h2>
+        <div class="decision-list">
+          <article>
+            <span>01</span>
+            <div>
+              <h3>Both compilers pass</h3>
+              <p>
+                Good signal. Keep the workflow manual or scheduled weekly to watch the
+                preview evolve without changing your production compiler.
+              </p>
+            </div>
+          </article>
+          <article>
+            <span>02</span>
+            <div>
+              <h3>TypeScript 7 fails on config</h3>
+              <p>
+                Treat it as migration work, not a runtime bug. Update deprecated options,
+                project references, module resolution, or declaration settings in a branch.
+              </p>
+            </div>
+          </article>
+          <article>
+            <span>03</span>
+            <div>
+              <h3>TypeScript 7 is faster</h3>
+              <p>
+                Useful for planning. If type-checking blocks local dev or CI, this gives
+                you evidence to follow the beta closely.
+              </p>
+            </div>
+          </article>
+          <article>
+            <span>04</span>
+            <div>
+              <h3>TypeScript 7 is slower or unsupported</h3>
+              <p>
+                Also useful. You now have a reproducible issue shape and can decide whether
+                to wait, reduce config complexity, or report a preview limitation.
+              </p>
+            </div>
           </article>
         </div>
       </section>

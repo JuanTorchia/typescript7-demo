@@ -1,10 +1,20 @@
 # TypeScript 7.0 Beta: Reproducible Repo
 
-This repository backs a blog post about the TypeScript 7.0 beta with commands that can be run locally.
+This repository backs a practical TypeScript 7 migration lab with commands that can be run locally or in GitHub Actions.
 
 Important correction: the public TypeScript 7.0 beta is not installed as `typescript@beta`. Microsoft published it as `@typescript/native-preview@beta`, and the native compiler is executed with `tsgo`.
 
 Official reference: <https://devblogs.microsoft.com/typescript/announcing-typescript-7-0-beta/>
+
+## Why Use This?
+
+Use this repo to prepare for TypeScript 7 before it becomes an upgrade deadline:
+
+- Find deprecated or removed compiler options early.
+- Compare TypeScript 6 and TypeScript 7 native preview on real public repositories.
+- Generate a private-repo-safe GitHub Actions workflow.
+- Track preview behavior over time while TypeScript 7 is still beta.
+- Build evidence for whether faster type-checking matters in your codebase.
 
 ## What This Proves
 

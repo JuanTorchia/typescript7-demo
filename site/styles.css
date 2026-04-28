@@ -165,6 +165,8 @@ code {
 .benchmarks,
 .examples,
 .claim-matrix,
+.usefulness,
+.decision-guide,
 .security {
   margin: 72px 0;
 }
@@ -323,20 +325,66 @@ code {
   gap: 18px;
 }
 
-.claim-grid {
+.claim-grid,
+.value-grid {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 16px;
 }
 
-.claim-grid article {
+.claim-grid article,
+.value-grid article {
   border: 2px solid var(--line);
   background: #e7f2d2;
   padding: 18px;
   box-shadow: 7px 7px 0 var(--line);
 }
 
-.claim-grid p {
+.value-grid article {
+  background: var(--panel);
+}
+
+.value-grid strong {
+  display: block;
+  margin-bottom: 10px;
+  font-size: 1.05rem;
+}
+
+.claim-grid p,
+.value-grid p {
+  color: var(--muted);
+  line-height: 1.55;
+}
+
+.decision-list {
+  display: grid;
+  gap: 14px;
+}
+
+.decision-list article {
+  display: grid;
+  grid-template-columns: 74px 1fr;
+  gap: 18px;
+  align-items: start;
+  border: 2px solid var(--line);
+  background: var(--panel);
+  padding: 18px;
+  box-shadow: 7px 7px 0 var(--line);
+}
+
+.decision-list article > span {
+  display: grid;
+  min-height: 58px;
+  place-items: center;
+  border: 2px solid var(--line);
+  background: var(--accent);
+  color: white;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 1.55rem;
+  font-weight: 850;
+}
+
+.decision-list p {
   color: var(--muted);
   line-height: 1.55;
 }
@@ -411,8 +459,13 @@ pre code {
   .row,
   .example-grid,
   .claim-grid,
+  .value-grid,
   .security,
   .columns {
+    grid-template-columns: 1fr;
+  }
+
+  .decision-list article {
     grid-template-columns: 1fr;
   }
 
