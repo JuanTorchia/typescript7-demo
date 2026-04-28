@@ -1,10 +1,22 @@
-# PreviewBench for TypeScript 7
+# TypeScript 7 PreviewBench
 
 PreviewBench is a practical TypeScript 7 migration lab with commands that can be run locally or in GitHub Actions.
 
 Important correction: the public TypeScript 7.0 beta is not installed as `typescript@beta`. Microsoft published it as `@typescript/native-preview@beta`, and the native compiler is executed with `tsgo`.
 
 Official reference: <https://devblogs.microsoft.com/typescript/announcing-typescript-7-0-beta/>
+
+## Why TypeScript 7 Matters
+
+TypeScript 7 is not a normal release. Microsoft moved the compiler to a native Go foundation, added parallel compiler work, and designed the beta to run side-by-side with TypeScript 6 during migration.
+
+The parts worth testing early:
+
+- Native compiler performance: Microsoft describes TypeScript 7 as often about `10x` faster than TypeScript 6.
+- Parallel controls: `--checkers`, `--builders`, and `--singleThreaded` matter for large repos and CI sizing.
+- Side-by-side validation: `tsgo` can be compared against `tsc6`.
+- Editor direction: the same native foundation is expected to improve daily feedback loops, not only CI.
+- Migration friction: deprecated TypeScript 6 flags become hard errors in TypeScript 7.
 
 ## Why Use This?
 

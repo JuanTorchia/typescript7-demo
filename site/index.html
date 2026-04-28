@@ -13,12 +13,12 @@
   <body>
     <main>
       <section class="hero">
-        <div class="eyebrow">PreviewBench for TypeScript 7</div>
-        <h1>Prepare your TypeScript project for TypeScript 7.</h1>
+        <div class="eyebrow">TypeScript 7.0 native preview</div>
+        <h1>The biggest TypeScript runtime shift is here.</h1>
         <p class="lede">
-          A developer tool for teams that want early TypeScript 7 migration signal without
-          handing over private source code. Benchmark public repos, generate a safe CI
-          workflow, and learn what will need attention before the upgrade lands.
+          TypeScript 7 moves the compiler to a native Go foundation, adds parallelism, and
+          is designed to run side-by-side with TypeScript 6 while the ecosystem migrates.
+          This lab turns the announcement into real checks you can run.
         </p>
         <div class="actions">
           <a class="button primary" href="#workflow">Try it on your repo</a>
@@ -28,8 +28,58 @@
 
       <section class="notice">
         <strong>Beta caveat:</strong>
-        TypeScript 7 is still a preview. Results are useful for early signal, but they are
-        not final compatibility or performance guarantees.
+        Microsoft describes TypeScript 7 as often about 10x faster than TypeScript 6, but
+        this is still a beta. Treat results as early signal, not a final compatibility or
+        performance guarantee.
+      </section>
+
+      <section class="ts7-pitch">
+        <span class="label">What's new in TypeScript 7</span>
+        <h2>Why developers should care.</h2>
+        <div class="pitch-grid">
+          <article>
+            <strong>Native compiler foundation</strong>
+            <p>
+              The compiler has been ported from a JavaScript runtime model to Go, targeting
+              native-code speed while preserving TypeScript 6 semantics.
+            </p>
+          </article>
+          <article>
+            <strong>Parallel type-checking</strong>
+            <p>
+              New worker-based checking can use multiple cores. The preview exposes controls
+              like <code>--checkers</code> and single-threaded mode for tuning and debugging.
+            </p>
+          </article>
+          <article>
+            <strong>Project reference parallelism</strong>
+            <p>
+              Larger repos and monorepos can benefit from parallel project builds through
+              builder controls, with memory trade-offs teams should measure.
+            </p>
+          </article>
+          <article>
+            <strong>Side-by-side migration</strong>
+            <p>
+              The preview ships as <code>@typescript/native-preview</code> with
+              <code>tsgo</code>, while TypeScript 6 can run as <code>tsc6</code>.
+            </p>
+          </article>
+          <article>
+            <strong>Faster editor direction</strong>
+            <p>
+              The same native foundation powers the preview editor experience, so speedups
+              should matter beyond CI and into daily feedback loops.
+            </p>
+          </article>
+          <article>
+            <strong>Real migration cleanup</strong>
+            <p>
+              TypeScript 7 hard-errors on several deprecated options. That is annoying, but
+              useful: it tells teams exactly what must be cleaned before the stable release.
+            </p>
+          </article>
+        </div>
       </section>
 
       <section class="usefulness" id="usefulness">
@@ -69,7 +119,7 @@
 
       <section class="product-flow">
         <span class="label">How it works</span>
-        <h2>Useful signal in three steps.</h2>
+        <h2>Turn the TypeScript 7 announcement into evidence.</h2>
         <div class="flow-grid">
           <article>
             <span>1</span>
@@ -100,19 +150,19 @@
 
       <section class="product-card">
         <div>
-          <span class="label">Product position</span>
-          <h2>Not a compiler replacement. A readiness check.</h2>
+          <span class="label">Why this lab exists</span>
+          <h2>Benchmarks alone are not enough.</h2>
           <p>
-            PreviewBench is designed for engineering leads, library maintainers, and teams
-            with slow type-checking pipelines who want evidence before they plan a
-            TypeScript 7 migration.
+            TypeScript 7 is exciting because it promises a faster compiler and editor
+            experience. The practical question is whether your project is ready to benefit
+            from it. This lab checks both sides: performance upside and migration friction.
           </p>
         </div>
         <ul>
-          <li>Public evidence from respected repositories.</li>
-          <li>Private-repo workflow that runs in your own CI.</li>
-          <li>Artifacts you can attach to an issue, PR, or migration plan.</li>
-          <li>Clear beta caveats so results do not overpromise.</li>
+          <li>Measure real public repositories, not synthetic snippets.</li>
+          <li>Catch TypeScript 7 config failures before they hit production CI.</li>
+          <li>Run private checks in your own GitHub Actions environment.</li>
+          <li>Keep beta expectations honest while still testing the upside.</li>
         </ul>
       </section>
 

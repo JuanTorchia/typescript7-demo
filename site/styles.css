@@ -166,6 +166,7 @@ code {
 .examples,
 .claim-matrix,
 .usefulness,
+.ts7-pitch,
 .product-flow,
 .product-card,
 .decision-guide,
@@ -329,10 +330,15 @@ code {
 
 .claim-grid,
 .value-grid,
+.pitch-grid,
 .flow-grid {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 16px;
+}
+
+.pitch-grid {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
 }
 
 .flow-grid {
@@ -341,6 +347,7 @@ code {
 
 .claim-grid article,
 .value-grid article,
+.pitch-grid article,
 .flow-grid article {
   border: 2px solid var(--line);
   background: #e7f2d2;
@@ -349,8 +356,14 @@ code {
 }
 
 .value-grid article,
+.pitch-grid article,
 .flow-grid article {
   background: var(--panel);
+}
+
+.pitch-grid article:nth-child(1),
+.pitch-grid article:nth-child(4) {
+  background: #ffe6a7;
 }
 
 .flow-grid article > span {
@@ -366,6 +379,8 @@ code {
 }
 
 .value-grid strong {
+.pitch-grid strong,
+.value-grid strong {
   display: block;
   margin-bottom: 10px;
   font-size: 1.05rem;
@@ -373,6 +388,7 @@ code {
 
 .claim-grid p,
 .value-grid p,
+.pitch-grid p,
 .flow-grid p,
 .product-card p,
 .product-card li {
@@ -499,6 +515,7 @@ pre code {
   .example-grid,
   .claim-grid,
   .value-grid,
+  .pitch-grid,
   .flow-grid,
   .product-card,
   .security,
