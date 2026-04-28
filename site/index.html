@@ -21,8 +21,8 @@
           generate a GitHub Actions workflow that runs inside your own repo.
         </p>
         <div class="actions">
-          <a class="button primary" href="#workflow">Generate workflow</a>
-          <a class="button secondary" href="#open-source">View fixtures</a>
+          <a class="button primary" href="#benchmarks">View benchmarks</a>
+          <a class="button secondary" href="#workflow">Generate workflow</a>
         </div>
       </section>
 
@@ -66,6 +66,113 @@
           <code>workflow_dispatch</code>
           <code>permissions: contents: read</code>
         </article>
+      </section>
+
+      <section class="benchmarks" id="benchmarks">
+        <div class="section-head">
+          <span class="label">Benchmarks</span>
+          <h2>Real commands, reproducible output.</h2>
+          <p>
+            The repo does not hard-code a marketing number. It runs the same commands in
+            GitHub Actions and uploads <code>benchmark-results.json</code> as an artifact,
+            so anyone can inspect the raw samples.
+          </p>
+        </div>
+
+        <div class="benchmark-table">
+          <div class="row header">
+            <span>Target</span>
+            <span>TypeScript 6</span>
+            <span>TypeScript 7 preview</span>
+            <span>What it tests</span>
+          </div>
+          <div class="row">
+            <span>Local strict project</span>
+            <code>npm run typecheck:ts6</code>
+            <code>npm run typecheck:ts7</code>
+            <span>Generics, discriminated unions, strict object-key typing.</span>
+          </div>
+          <div class="row">
+            <span>Type-Fest fixture</span>
+            <code>npm run typecheck:oss:ts6</code>
+            <code>npm run typecheck:oss:ts7</code>
+            <span>Conditional, mapped, recursive, and template-literal types.</span>
+          </div>
+          <div class="row">
+            <span>Full verification</span>
+            <code>npm run verify</code>
+            <code>npm run bench</code>
+            <span>Compiler parity, failing fixture, and benchmark artifact.</span>
+          </div>
+        </div>
+
+        <div class="artifact-card">
+          <div>
+            <h3>Where are the numbers?</h3>
+            <p>
+              Each CI run produces a fresh benchmark artifact. This is better than shipping
+              stale numbers because TypeScript 7 is a moving preview and performance changes
+              across machines, package caches, and project shapes.
+            </p>
+          </div>
+          <a
+            class="button secondary"
+            href="https://github.com/JuanTorchia/typescript7-demo/actions/workflows/typescript-7-open-source.yml"
+          >
+            Open latest CI run
+          </a>
+        </div>
+      </section>
+
+      <section class="examples">
+        <span class="label">Examples</span>
+        <h2>Concrete cases included in the repo.</h2>
+        <div class="example-grid">
+          <article class="example">
+            <h3>Type-Fest smoke test</h3>
+            <p>
+              Imports real Type-Fest utilities such as <code>MergeDeep</code>,
+              <code>ReadonlyDeep</code>, <code>Paths</code>, and
+              <code>CamelCasedPropertiesDeep</code>.
+            </p>
+            <pre><code>type PublishPayload = Simplify&lt;
+  SetRequired&lt;
+    MergeDeep&lt;BlogPostViewModel, PublishDefaults&gt;,
+    "postId" | "authorProfile"
+  &gt;
+&gt;;</code></pre>
+          </article>
+
+          <article class="example">
+            <h3>Stricter object-key typing</h3>
+            <p>
+              The project includes an example where the key type must be narrowed to string
+              keys because <code>Object.keys</code> never returns symbols.
+            </p>
+            <pre><code>export function typedKeys&lt;T extends Record&lt;string, unknown&gt;&gt;(
+  value: T,
+): Array&lt;Extract&lt;keyof T, string&gt;&gt; {
+  return Object.keys(value).filter(
+    (key): key is Extract&lt;keyof T, string&gt; =&gt; key in value,
+  );
+}</code></pre>
+          </article>
+
+          <article class="example">
+            <h3>Declaration safety</h3>
+            <p>
+              The repo keeps a fixture that intentionally fails with
+              <code>isolatedDeclarations</code>, proving the test suite catches public API
+              annotations that need to be explicit.
+            </p>
+            <pre><code>export const getPostMetadata = async (slug: string) =&gt; {
+  return {
+    slug,
+    title: "missing explicit return type",
+  };
+};</code></pre>
+          </article>
+        </div>
       </section>
 
       <section class="security" id="workflow">

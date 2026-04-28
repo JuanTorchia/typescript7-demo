@@ -142,6 +142,9 @@ h3 {
 .card p,
 .panel p,
 .how p,
+.section-head p,
+.artifact-card p,
+.example p,
 .security li {
   color: var(--muted);
   line-height: 1.55;
@@ -159,12 +162,82 @@ code {
   font-size: 0.92em;
 }
 
+.benchmarks,
+.examples,
+.security {
+  margin: 72px 0;
+}
+
+.section-head {
+  max-width: 820px;
+  margin-bottom: 24px;
+}
+
+.benchmark-table {
+  border: 2px solid var(--line);
+  background: var(--panel);
+  box-shadow: var(--shadow);
+  overflow: hidden;
+}
+
+.row {
+  display: grid;
+  grid-template-columns: 1fr 1.1fr 1.1fr 1.25fr;
+  gap: 14px;
+  align-items: start;
+  padding: 16px;
+  border-top: 2px solid var(--line);
+}
+
+.row:first-child {
+  border-top: 0;
+}
+
+.row.header {
+  background: var(--green);
+  color: white;
+  font-weight: 850;
+}
+
+.row span {
+  min-width: 0;
+}
+
+.artifact-card {
+  display: flex;
+  gap: 24px;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 22px;
+  border: 2px solid var(--line);
+  background: #e7f2d2;
+  padding: 22px;
+  box-shadow: 8px 8px 0 var(--line);
+}
+
+.example-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 18px;
+}
+
+.example {
+  border: 2px solid var(--line);
+  background: var(--panel);
+  padding: 20px;
+  box-shadow: 8px 8px 0 var(--line);
+}
+
+.example pre {
+  max-height: 260px;
+  font-size: 0.78rem;
+}
+
 .security {
   display: grid;
   grid-template-columns: 0.78fr 1.22fr;
   gap: 34px;
   align-items: start;
-  margin: 72px 0;
 }
 
 ul {
@@ -215,9 +288,16 @@ pre code {
   }
 
   .grid,
+  .row,
+  .example-grid,
   .security,
   .columns {
     grid-template-columns: 1fr;
+  }
+
+  .artifact-card {
+    align-items: stretch;
+    flex-direction: column;
   }
 
   .notice,
