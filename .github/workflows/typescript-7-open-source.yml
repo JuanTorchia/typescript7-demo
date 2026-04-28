@@ -12,9 +12,9 @@ permissions:
 
 jobs:
   type-fest-fixture:
-    name: Type-Fest fixture
+    name: TypeScript 7 public checks
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 20
 
     steps:
       - name: Checkout repository

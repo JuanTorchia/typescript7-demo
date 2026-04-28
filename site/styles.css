@@ -164,6 +164,7 @@ code {
 
 .benchmarks,
 .examples,
+.claim-matrix,
 .security {
   margin: 72px 0;
 }
@@ -322,6 +323,24 @@ code {
   gap: 18px;
 }
 
+.claim-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.claim-grid article {
+  border: 2px solid var(--line);
+  background: #e7f2d2;
+  padding: 18px;
+  box-shadow: 7px 7px 0 var(--line);
+}
+
+.claim-grid p {
+  color: var(--muted);
+  line-height: 1.55;
+}
+
 .example {
   border: 2px solid var(--line);
   background: var(--panel);
@@ -391,6 +410,7 @@ pre code {
   .grid,
   .row,
   .example-grid,
+  .claim-grid,
   .security,
   .columns {
     grid-template-columns: 1fr;

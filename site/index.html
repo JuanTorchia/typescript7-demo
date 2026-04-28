@@ -35,11 +35,11 @@
       <section class="grid" id="open-source">
         <article class="card">
           <span class="label">Open-source baseline</span>
-          <h2>Type-Fest</h2>
+          <h2>Public repos</h2>
           <p>
-            A respected public repository with conditional, mapped, recursive, and
-            template-literal types. CI clones <code>sindresorhus/type-fest@v5.6.0</code>
-            and runs both compilers against the real repo.
+            CI now checks multiple public repositories: <code>type-fest</code>,
+            <code>ts-pattern</code>, and <code>neverthrow</code>. Each project maps to a
+            different TypeScript 7 migration signal.
           </p>
           <code>npm run bench:public</code>
           <code>npm run typecheck:oss:ts6</code>
@@ -111,6 +111,18 @@
             <code>node .../tsgo.js</code>
             <span>Real repository cloned from GitHub at tag <code>v5.6.0</code>.</span>
           </div>
+          <div class="row">
+            <span>Public repo: gvergnaud/ts-pattern</span>
+            <code>tsc6 --strict --noEmit</code>
+            <code>tsgo --strict --noEmit</code>
+            <span>Deep inference, union narrowing, and exhaustive match types.</span>
+          </div>
+          <div class="row">
+            <span>Public repo: supermacro/neverthrow</span>
+            <code>tsc6 --noEmit</code>
+            <code>tsgo --noEmit</code>
+            <span>Migration signal for deprecated or removed compiler options.</span>
+          </div>
         </div>
 
         <div class="artifact-card">
@@ -134,20 +146,20 @@
         <div class="sample-result">
           <div>
             <span class="metric-label">Sample local run</span>
-            <strong>Type-Fest v5.6.0</strong>
+            <strong>Public repo matrix</strong>
             <small>Windows, Node 24, RUNS=1. CI artifacts are the reproducible source.</small>
           </div>
           <div class="metric">
-            <span>TypeScript 6</span>
-            <strong>62.0s</strong>
+            <span>type-fest</span>
+            <strong>1.56x</strong>
           </div>
           <div class="metric faster">
-            <span>TypeScript 7 preview</span>
-            <strong>27.2s</strong>
+            <span>ts-pattern</span>
+            <strong>2.56x</strong>
           </div>
           <div class="metric">
-            <span>Observed delta</span>
-            <strong>~2.3x faster</strong>
+            <span>neverthrow</span>
+            <strong>config break</strong>
           </div>
         </div>
 
@@ -164,6 +176,41 @@
             This is a replay of a measured run. The real benchmark runs in GitHub Actions and
             uploads <code>benchmark-public-repos.json</code>.
           </p>
+        </div>
+      </section>
+
+      <section class="claim-matrix">
+        <span class="label">Microsoft claims mapped to tests</span>
+        <h2>What the lab is actually probing.</h2>
+        <div class="claim-grid">
+          <article>
+            <h3>Native compiler speed</h3>
+            <p>
+              Type-Fest is intentionally type-heavy. It is a good stress test for checking
+              whether the native compiler changes wall-clock time on real type-level code.
+            </p>
+          </article>
+          <article>
+            <h3>Parallel checking direction</h3>
+            <p>
+              The public benchmark records raw samples so later runs can test preview
+              improvements such as checker parallelism without changing the page copy.
+            </p>
+          </article>
+          <article>
+            <h3>Side-by-side migration</h3>
+            <p>
+              Every benchmark installs TypeScript 6 and the TypeScript 7 native preview in
+              the same cloned repository, so differences are visible in one artifact.
+            </p>
+          </article>
+          <article>
+            <h3>Config compatibility</h3>
+            <p>
+              neverthrow intentionally stays in the matrix because it surfaces migration
+              issues such as removed or deprecated compiler options.
+            </p>
+          </article>
         </div>
       </section>
 
@@ -212,6 +259,20 @@ benchmark-public-repos.json</code></pre>
     title: "missing explicit return type",
   };
 };</code></pre>
+          </article>
+
+          <article class="example">
+            <h3>Migration config errors</h3>
+            <p>
+              The public neverthrow check is intentionally useful even when it fails: it
+              shows deprecated TypeScript 6 options that become removed TypeScript 7
+              options.
+            </p>
+            <pre><code>TS5107: moduleResolution=node10 is deprecated
+TS5101: baseUrl is deprecated
+
+TS5108: moduleResolution=node10 has been removed
+TS5102: baseUrl has been removed</code></pre>
           </article>
         </div>
       </section>
