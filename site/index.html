@@ -1,0 +1,152 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>TypeScript 7 Preview Check</title>
+    <meta
+      name="description"
+      content="Check how the TypeScript 7 native preview behaves on real open-source projects and generate a safe GitHub Actions workflow for your own repo."
+    />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <main>
+      <section class="hero">
+        <div class="eyebrow">TypeScript 7.0 native preview</div>
+        <h1>How fast would TypeScript 7 check your project?</h1>
+        <p class="lede">
+          Run a reproducible comparison between the current TypeScript compiler and the
+          TypeScript 7 native preview. Start with respected open-source fixtures, then
+          generate a GitHub Actions workflow that runs inside your own repo.
+        </p>
+        <div class="actions">
+          <a class="button primary" href="#workflow">Generate workflow</a>
+          <a class="button secondary" href="#open-source">View fixtures</a>
+        </div>
+      </section>
+
+      <section class="notice">
+        <strong>Beta caveat:</strong>
+        TypeScript 7 is still a preview. Results are useful for early signal, but they are
+        not final compatibility or performance guarantees.
+      </section>
+
+      <section class="grid" id="open-source">
+        <article class="card">
+          <span class="label">Open-source baseline</span>
+          <h2>Type-Fest</h2>
+          <p>
+            A respected type-heavy package with conditional, mapped, recursive, and
+            template-literal types. This repo pins <code>type-fest@5.6.0</code> and
+            checks a real fixture against both compilers.
+          </p>
+          <code>npm run typecheck:oss:ts6</code>
+          <code>npm run typecheck:oss:ts7</code>
+        </article>
+
+        <article class="card">
+          <span class="label">Local project</span>
+          <h2>This repo</h2>
+          <p>
+            A small strict TypeScript project with generics, discriminated unions,
+            declaration checking, and a deliberately failing isolated declarations fixture.
+          </p>
+          <code>npm run verify</code>
+          <code>npm run bench</code>
+        </article>
+
+        <article class="card">
+          <span class="label">Private repos</span>
+          <h2>Your GitHub Actions</h2>
+          <p>
+            Private repositories should stay private. The generated workflow runs in your
+            GitHub Actions environment, not on our servers.
+          </p>
+          <code>workflow_dispatch</code>
+          <code>permissions: contents: read</code>
+        </article>
+      </section>
+
+      <section class="security" id="workflow">
+        <div>
+          <span class="label">Security model</span>
+          <h2>We do not need access to your code.</h2>
+          <p>
+            The safest version is a CI recipe, not a hosted remote-code execution service.
+            You add the workflow to your own repository, run it manually, and keep the logs,
+            artifacts, and permissions under your GitHub account.
+          </p>
+          <ul>
+            <li>No repository clone on our servers.</li>
+            <li>No private source code leaves your GitHub Actions runner.</li>
+            <li>No write permissions are required for the workflow itself.</li>
+            <li>You can delete the workflow at any time.</li>
+          </ul>
+        </div>
+        <div class="panel">
+          <h3>Generated workflow</h3>
+          <p>
+            This workflow compares your current type-check command with
+            <code>tsgo --noEmit</code>.
+          </p>
+          <button class="copy" data-copy-target="workflow-code">Copy YAML</button>
+          <pre><code id="workflow-code">name: TypeScript 7 Preview Check
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install TypeScript 7 native preview
+        run: npm install --no-save @typescript/native-preview@beta
+
+      - name: Current project type-check
+        run: npm run typecheck
+
+      - name: TypeScript 7 native preview version
+        run: npx tsgo --version
+
+      - name: TypeScript 7 native preview check
+        run: npx tsgo --noEmit</code></pre>
+        </div>
+      </section>
+
+      <section class="how">
+        <span class="label">How to interpret results</span>
+        <h2>Use it as early migration signal.</h2>
+        <div class="columns">
+          <p>
+            A passing run means the preview compiler can type-check your project under this
+            command today. It does not mean TypeScript 7 is production-ready for your entire
+            toolchain.
+          </p>
+          <p>
+            A failing run is still useful. It can reveal unsupported compiler options,
+            stricter type behavior, project-reference edge cases, or preview limitations.
+          </p>
+        </div>
+      </section>
+    </main>
+    <script src="./main.js"></script>
+  </body>
+</html>

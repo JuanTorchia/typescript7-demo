@@ -1,0 +1,56 @@
+name: TypeScript 7 Open Source Fixture
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  type-fest-fixture:
+    name: Type-Fest fixture
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Show compiler versions
+        run: |
+          npx tsc6 --version
+          npx tsgo --version
+
+      - name: Type-check local project with TypeScript 6
+        run: npm run typecheck:ts6
+
+      - name: Type-check local project with TypeScript 7 native preview
+        run: npm run typecheck:ts7
+
+      - name: Type-check Type-Fest fixture with TypeScript 6
+        run: npm run typecheck:oss:ts6
+
+      - name: Type-check Type-Fest fixture with TypeScript 7 native preview
+        run: npm run typecheck:oss:ts7
+
+      - name: Run benchmark
+        run: npm run bench
+
+      - name: Upload benchmark result
+        uses: actions/upload-artifact@v4
+        with:
+          name: typescript-7-open-source-benchmark
+          path: benchmark-results.json

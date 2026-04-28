@@ -1,0 +1,30 @@
+{
+  "name": "typescript7-demo",
+  "version": "1.0.0",
+  "description": "Reproducible repo comparing TypeScript 6 with the TypeScript 7.0 native preview.",
+  "type": "module",
+  "scripts": {
+    "typecheck:ts6": "tsc6 --noEmit",
+    "typecheck:ts7": "tsgo --noEmit",
+    "typecheck:isolated": "tsgo -p tsconfig.isolated.json --noEmit",
+    "typecheck:oss:ts6": "tsc6 -p tsconfig.oss.json --noEmit",
+    "typecheck:oss:ts7": "tsgo -p tsconfig.oss.json --noEmit",
+    "test": "node --test test/*.test.mjs",
+    "site:serve": "npx --yes serve site",
+    "bench": "node scripts/benchmark.mjs",
+    "verify": "npm run typecheck:ts6 && npm run typecheck:ts7 && npm run typecheck:isolated && npm run typecheck:oss:ts6 && npm run typecheck:oss:ts7 && npm test"
+  },
+  "keywords": [
+    "typescript",
+    "typescript-7",
+    "tsgo",
+    "benchmark"
+  ],
+  "author": "Juan Torchia",
+  "license": "ISC",
+  "devDependencies": {
+    "@typescript/native-preview": "^7.0.0-dev.20260421.2",
+    "type-fest": "^5.6.0",
+    "typescript": "npm:@typescript/typescript6@^6.0.0"
+  }
+}
