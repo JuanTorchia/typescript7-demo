@@ -52,5 +52,14 @@ jobs:
       - name: Upload benchmark result
         uses: actions/upload-artifact@v4
         with:
-          name: typescript-7-open-source-benchmark
+          name: typescript-7-local-fixture-benchmark
           path: benchmark-results.json
+
+      - name: Run public repository benchmark
+        run: npm run bench:public
+
+      - name: Upload public repository benchmark result
+        uses: actions/upload-artifact@v4
+        with:
+          name: typescript-7-public-repository-benchmark
+          path: benchmark-public-repos.json

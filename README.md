@@ -13,6 +13,7 @@ Official reference: <https://devblogs.microsoft.com/typescript/announcing-typesc
 - The same local TypeScript project type-checks with both compilers.
 - `isolatedDeclarations` catches public exports that need explicit annotations.
 - An open-source type-heavy fixture based on `type-fest@5.6.0` type-checks with both compilers.
+- A public-repository benchmark clones `sindresorhus/type-fest@v5.6.0`, verifies the expected commit, and compares both compilers against the real repo.
 - The benchmark script compares `tsc6 --noEmit` and `tsgo --noEmit` on both the local project and the Type-Fest fixture.
 - The static site explains the safer model for private repositories: run the check in the user's own GitHub Actions environment.
 
@@ -95,6 +96,24 @@ $env:RUNS=10; npm run bench
 
 Benchmark results depend heavily on machine, OS, package manager cache, project size, and cold versus warm runs. Treat them as local measurements, not universal claims.
 
+## Public Repository Benchmark
+
+```bash
+npm run bench:public
+```
+
+This clones the real public repository `sindresorhus/type-fest` at tag `v5.6.0`, checks that the resolved commit is `a5491644b32160f804dd10d0b44dad461037f4c1`, installs dependencies, and writes `benchmark-public-repos.json`.
+
+It is intentionally separate from `npm run verify` because it performs network IO and takes longer than the local fixture checks.
+
+A local smoke run on Windows with Node 24 and `RUNS=1` measured:
+
+- TypeScript 6: `62039ms`
+- TypeScript 7 native preview: `27241ms`
+- Observed delta: roughly `2.3x` faster
+
+Treat those as sample numbers only. The GitHub Actions artifact is the reproducible benchmark output for the published repo.
+
 ## GitHub Actions
 
 This repo includes `.github/workflows/typescript-7-open-source.yml`.
@@ -105,6 +124,8 @@ It runs the local project and the Type-Fest fixture against:
 - TypeScript 7 native preview through `tsgo`
 
 It also uploads `benchmark-results.json` as a workflow artifact.
+
+The workflow also runs the public repository benchmark and uploads `benchmark-public-repos.json`.
 
 ## Relevant Files
 

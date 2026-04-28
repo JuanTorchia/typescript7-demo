@@ -12,6 +12,7 @@
     "test": "node --test test/*.test.mjs",
     "site:serve": "npx --yes serve site",
     "bench": "node scripts/benchmark.mjs",
+    "bench:public": "node scripts/benchmark-public-repos.mjs",
     "verify": "npm run typecheck:ts6 && npm run typecheck:ts7 && npm run typecheck:isolated && npm run typecheck:oss:ts6 && npm run typecheck:oss:ts7 && npm test"
   },
   "keywords": [

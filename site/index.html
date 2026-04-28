@@ -37,10 +37,11 @@
           <span class="label">Open-source baseline</span>
           <h2>Type-Fest</h2>
           <p>
-            A respected type-heavy package with conditional, mapped, recursive, and
-            template-literal types. This repo pins <code>type-fest@5.6.0</code> and
-            checks a real fixture against both compilers.
+            A respected public repository with conditional, mapped, recursive, and
+            template-literal types. CI clones <code>sindresorhus/type-fest@v5.6.0</code>
+            and runs both compilers against the real repo.
           </p>
+          <code>npm run bench:public</code>
           <code>npm run typecheck:oss:ts6</code>
           <code>npm run typecheck:oss:ts7</code>
         </article>
@@ -104,14 +105,21 @@
             <code>npm run bench</code>
             <span>Compiler parity, failing fixture, and benchmark artifact.</span>
           </div>
+          <div class="row highlight">
+            <span>Public repo: sindresorhus/type-fest</span>
+            <code>node --max-old-space-size=6144 .../tsc6</code>
+            <code>node .../tsgo.js</code>
+            <span>Real repository cloned from GitHub at tag <code>v5.6.0</code>.</span>
+          </div>
         </div>
 
         <div class="artifact-card">
           <div>
             <h3>Where are the numbers?</h3>
             <p>
-              Each CI run produces a fresh benchmark artifact. This is better than shipping
-              stale numbers because TypeScript 7 is a moving preview and performance changes
+              Each CI run produces fresh benchmark artifacts, including a dedicated result
+              for the public Type-Fest repository. This is better than shipping stale
+              numbers because TypeScript 7 is a moving preview and performance changes
               across machines, package caches, and project shapes.
             </p>
           </div>
@@ -122,6 +130,26 @@
             Open latest CI run
           </a>
         </div>
+
+        <div class="sample-result">
+          <div>
+            <span class="metric-label">Sample local run</span>
+            <strong>Type-Fest v5.6.0</strong>
+            <small>Windows, Node 24, RUNS=1. CI artifacts are the reproducible source.</small>
+          </div>
+          <div class="metric">
+            <span>TypeScript 6</span>
+            <strong>62.0s</strong>
+          </div>
+          <div class="metric faster">
+            <span>TypeScript 7 preview</span>
+            <strong>27.2s</strong>
+          </div>
+          <div class="metric">
+            <span>Observed delta</span>
+            <strong>~2.3x faster</strong>
+          </div>
+        </div>
       </section>
 
       <section class="examples">
@@ -129,18 +157,16 @@
         <h2>Concrete cases included in the repo.</h2>
         <div class="example-grid">
           <article class="example">
-            <h3>Type-Fest smoke test</h3>
+            <h3>Public Type-Fest repository</h3>
             <p>
-              Imports real Type-Fest utilities such as <code>MergeDeep</code>,
-              <code>ReadonlyDeep</code>, <code>Paths</code>, and
-              <code>CamelCasedPropertiesDeep</code>.
+              The CI workflow clones <code>sindresorhus/type-fest</code> at
+              <code>v5.6.0</code>, verifies the expected commit, installs dependencies,
+              and benchmarks the real repository with both compilers.
             </p>
-            <pre><code>type PublishPayload = Simplify&lt;
-  SetRequired&lt;
-    MergeDeep&lt;BlogPostViewModel, PublishDefaults&gt;,
-    "postId" | "authorProfile"
-  &gt;
-&gt;;</code></pre>
+            <pre><code>npm run bench:public
+
+# writes
+benchmark-public-repos.json</code></pre>
           </article>
 
           <article class="example">
