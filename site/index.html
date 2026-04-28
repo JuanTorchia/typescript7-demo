@@ -13,16 +13,16 @@
   <body>
     <main>
       <section class="hero">
-        <div class="eyebrow">TypeScript 7.0 native preview</div>
+        <div class="eyebrow">PreviewBench for TypeScript 7</div>
         <h1>Prepare your TypeScript project for TypeScript 7.</h1>
         <p class="lede">
-          A practical migration lab for the TypeScript 7 native preview. See what gets
-          faster, what breaks, which compiler options need attention, and how to run the
-          same check safely inside your own GitHub Actions.
+          A developer tool for teams that want early TypeScript 7 migration signal without
+          handing over private source code. Benchmark public repos, generate a safe CI
+          workflow, and learn what will need attention before the upgrade lands.
         </p>
         <div class="actions">
-          <a class="button primary" href="#usefulness">Why use this?</a>
-          <a class="button secondary" href="#workflow">Run it on your repo</a>
+          <a class="button primary" href="#workflow">Try it on your repo</a>
+          <a class="button secondary" href="#benchmarks">See public benchmarks</a>
         </div>
       </section>
 
@@ -34,7 +34,7 @@
 
       <section class="usefulness" id="usefulness">
         <span class="label">Developer value</span>
-        <h2>Use this before TypeScript 7 becomes your problem.</h2>
+        <h2>The upgrade radar for TypeScript-heavy teams.</h2>
         <div class="value-grid">
           <article>
             <strong>Find migration blockers early</strong>
@@ -65,6 +65,55 @@
             </p>
           </article>
         </div>
+      </section>
+
+      <section class="product-flow">
+        <span class="label">How it works</span>
+        <h2>Useful signal in three steps.</h2>
+        <div class="flow-grid">
+          <article>
+            <span>1</span>
+            <h3>Compare public baselines</h3>
+            <p>
+              Start with known open-source projects so the benchmark has context and is not
+              just a synthetic toy.
+            </p>
+          </article>
+          <article>
+            <span>2</span>
+            <h3>Generate your CI workflow</h3>
+            <p>
+              Copy a GitHub Actions workflow that installs the TypeScript 7 native preview
+              and checks your repo with read-only permissions.
+            </p>
+          </article>
+          <article>
+            <span>3</span>
+            <h3>Read the migration report</h3>
+            <p>
+              Use the output to classify your project: ready, blocked by config, blocked by
+              compiler behavior, or worth tracking for performance.
+            </p>
+          </article>
+        </div>
+      </section>
+
+      <section class="product-card">
+        <div>
+          <span class="label">Product position</span>
+          <h2>Not a compiler replacement. A readiness check.</h2>
+          <p>
+            PreviewBench is designed for engineering leads, library maintainers, and teams
+            with slow type-checking pipelines who want evidence before they plan a
+            TypeScript 7 migration.
+          </p>
+        </div>
+        <ul>
+          <li>Public evidence from respected repositories.</li>
+          <li>Private-repo workflow that runs in your own CI.</li>
+          <li>Artifacts you can attach to an issue, PR, or migration plan.</li>
+          <li>Clear beta caveats so results do not overpromise.</li>
+        </ul>
       </section>
 
       <section class="grid" id="open-source">

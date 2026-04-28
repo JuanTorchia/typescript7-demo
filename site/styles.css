@@ -166,6 +166,8 @@ code {
 .examples,
 .claim-matrix,
 .usefulness,
+.product-flow,
+.product-card,
 .decision-guide,
 .security {
   margin: 72px 0;
@@ -326,22 +328,41 @@ code {
 }
 
 .claim-grid,
-.value-grid {
+.value-grid,
+.flow-grid {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 16px;
 }
 
+.flow-grid {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
 .claim-grid article,
-.value-grid article {
+.value-grid article,
+.flow-grid article {
   border: 2px solid var(--line);
   background: #e7f2d2;
   padding: 18px;
   box-shadow: 7px 7px 0 var(--line);
 }
 
-.value-grid article {
+.value-grid article,
+.flow-grid article {
   background: var(--panel);
+}
+
+.flow-grid article > span {
+  display: grid;
+  width: 46px;
+  height: 46px;
+  margin-bottom: 16px;
+  place-items: center;
+  border: 2px solid var(--line);
+  background: var(--accent);
+  color: white;
+  font-weight: 900;
 }
 
 .value-grid strong {
@@ -351,9 +372,27 @@ code {
 }
 
 .claim-grid p,
-.value-grid p {
+.value-grid p,
+.flow-grid p,
+.product-card p,
+.product-card li {
   color: var(--muted);
   line-height: 1.55;
+}
+
+.product-card {
+  display: grid;
+  grid-template-columns: 1fr 0.85fr;
+  gap: 28px;
+  align-items: start;
+  border: 2px solid var(--line);
+  background: #ffe6a7;
+  padding: 26px;
+  box-shadow: var(--shadow);
+}
+
+.product-card ul {
+  margin: 0;
 }
 
 .decision-list {
@@ -460,6 +499,8 @@ pre code {
   .example-grid,
   .claim-grid,
   .value-grid,
+  .flow-grid,
+  .product-card,
   .security,
   .columns {
     grid-template-columns: 1fr;
