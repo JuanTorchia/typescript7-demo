@@ -39,7 +39,10 @@ main {
 
 .eyebrow,
 .label {
+  display: inline-flex;
+  align-items: center;
   width: fit-content;
+  margin-bottom: 14px;
   border: 2px solid var(--line);
   border-radius: 999px;
   padding: 8px 12px;
@@ -61,17 +64,17 @@ h1 {
   max-width: 920px;
   margin-bottom: 20px;
   font-family: Georgia, "Times New Roman", serif;
-  font-size: clamp(3.25rem, 10vw, 7.8rem);
-  line-height: 0.86;
-  letter-spacing: -0.075em;
+  font-size: clamp(3rem, 8vw, 7rem);
+  line-height: 0.98;
+  letter-spacing: -0.055em;
 }
 
 h2 {
   margin-bottom: 14px;
   font-family: Georgia, "Times New Roman", serif;
-  font-size: clamp(2rem, 5vw, 4rem);
-  line-height: 0.95;
-  letter-spacing: -0.05em;
+  font-size: clamp(2rem, 4.4vw, 3.6rem);
+  line-height: 1.04;
+  letter-spacing: -0.04em;
 }
 
 h3 {
@@ -378,7 +381,6 @@ code {
   font-weight: 900;
 }
 
-.value-grid strong {
 .pitch-grid strong,
 .value-grid strong {
   display: block;
@@ -508,6 +510,18 @@ pre code {
 
   .hero {
     min-height: 58vh;
+  }
+
+  h1 {
+    font-size: clamp(3rem, 13vw, 4.7rem);
+    line-height: 1.02;
+    letter-spacing: -0.045em;
+  }
+
+  h2 {
+    font-size: clamp(2.2rem, 10vw, 3.2rem);
+    line-height: 1.08;
+    letter-spacing: -0.035em;
   }
 
   .grid,
