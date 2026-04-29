@@ -144,25 +144,37 @@ updateWorkflow();
 const terminalOutput = document.getElementById("terminal-output");
 const replayButton = document.querySelector("[data-terminal-replay]");
 const terminalLines = [
-  " juanchi   typescript7-demo   main  npm run bench:public",
-  "  > node scripts/benchmark-public-repos.mjs",
-  " cloning sindresorhus/type-fest@v5.6.0",
-  "✓ verified commit a5491644b32160f804dd10d0b44dad461037f4c1",
-  "  installing dependencies and TypeScript preview packages",
-  "◆ benchmark target: sindresorhus/type-fest",
-  "  node --max-old-space-size=6144 .../tsc6 -p tsconfig.json --noEmit",
-  "✓ TypeScript 6 passed in 62039ms",
-  "  node .../@typescript/native-preview/bin/tsgo.js -p tsconfig.json --noEmit",
-  "✓ TypeScript 7 preview passed in 40537ms",
-  "↳ observed delta: ~1.56x faster",
-  " cloning gvergnaud/ts-pattern@v5.9.0",
-  "✓ TypeScript 6 passed in 1669ms",
-  "✓ TypeScript 7 preview passed in 652ms",
-  "↳ observed delta: ~2.56x faster",
-  " cloning supermacro/neverthrow@v8.2.0",
-  "⚠ TypeScript 6: moduleResolution=node10 and baseUrl are deprecated",
-  "✗ TypeScript 7: moduleResolution=node10 and baseUrl have been removed",
-  "✓ wrote benchmark-public-repos.json",
+  "PS C:\\Users\\jstor\\develop\\typescript7-demo> $env:RUNS=1; npm run bench:public",
+  "",
+  "> typescript7-demo@1.0.0 bench:public",
+  "> node scripts/benchmark-public-repos.mjs",
+  "",
+  "Cloning into '.tmp/public-repos/type-fest'...",
+  "added 574 packages, and audited 575 packages in 4m",
+  "found 0 vulnerabilities",
+  "added 4 packages, and audited 579 packages in 18s",
+  "found 0 vulnerabilities",
+  "",
+  "Cloning into '.tmp/public-repos/ts-pattern'...",
+  "added 654 packages, and audited 655 packages in 40s",
+  "13 vulnerabilities (4 moderate, 8 high, 1 critical)",
+  "",
+  "Cloning into '.tmp/public-repos/neverthrow'...",
+  "added 311 packages, and audited 312 packages in 39s",
+  "20 vulnerabilities (2 low, 8 moderate, 9 high, 1 critical)",
+  "",
+  "┌─────────┬──────────────────────────┬────────────────────┬──────────┬──────────┬───────┐",
+  "│ (index) │ repo                     │ kind               │ ts6      │ ts7      │ delta │",
+  "├─────────┼──────────────────────────┼────────────────────┼──────────┼──────────┼───────┤",
+  "│ 0       │ 'sindresorhus/type-fest' │ 'benchmark'        │ 57814    │ 30034    │ 1.92  │",
+  "│ 1       │ 'gvergnaud/ts-pattern'   │ 'benchmark'        │ 1327     │ 6304     │ 0.21  │",
+  "│ 2       │ 'supermacro/neverthrow'  │ 'migration-signal' │ 'failed' │ 'failed' │ null  │",
+  "└─────────┴──────────────────────────┴────────────────────┴──────────┴──────────┴───────┘",
+  "Wrote benchmark-public-repos.json",
+  "",
+  "TS5107: moduleResolution=node10 is deprecated in TypeScript 6",
+  "TS5108: moduleResolution=node10 has been removed in TypeScript 7",
+  "TS5101/TS5102: baseUrl migration required",
 ];
 
 let replayTimer;
@@ -247,6 +259,10 @@ function terminalColor(line) {
     return "\x1b[1;37m";
   }
 
+  if (line.startsWith("PS ")) {
+    return "\x1b[1;37m";
+  }
+
   if (line.startsWith("")) {
     return "\x1b[36m";
   }
@@ -269,6 +285,18 @@ function terminalColor(line) {
 
   if (line.startsWith("✗")) {
     return "\x1b[31m";
+  }
+
+  if (line.startsWith("TS510")) {
+    return "\x1b[33m";
+  }
+
+  if (line.includes("vulnerabilities")) {
+    return "\x1b[33m";
+  }
+
+  if (line.includes("found 0 vulnerabilities") || line.startsWith("Wrote ")) {
+    return "\x1b[32m";
   }
 
   return "\x1b[90m";
