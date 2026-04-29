@@ -144,32 +144,33 @@ updateWorkflow();
 const terminalOutput = document.getElementById("terminal-output");
 const replayButton = document.querySelector("[data-terminal-replay]");
 const terminalLines = [
-  "PS C:\\Users\\jstor\\develop\\typescript7-demo> $env:RUNS=1; npm run bench:public",
+  "PS C:\\Users\\jstor\\develop\\typescript7-demo> $env:RUNS=3; $env:WARMUPS=1; npm run bench:public",
   "",
   "> typescript7-demo@1.0.0 bench:public",
   "> node scripts/benchmark-public-repos.mjs",
   "",
-  "Cloning into '.tmp/public-repos/type-fest'...",
-  "added 574 packages, and audited 575 packages in 4m",
-  "found 0 vulnerabilities",
-  "added 4 packages, and audited 579 packages in 18s",
-  "found 0 vulnerabilities",
-  "",
-  "Cloning into '.tmp/public-repos/ts-pattern'...",
-  "added 654 packages, and audited 655 packages in 40s",
-  "13 vulnerabilities (4 moderate, 8 high, 1 critical)",
-  "",
-  "Cloning into '.tmp/public-repos/neverthrow'...",
-  "added 311 packages, and audited 312 packages in 39s",
-  "20 vulnerabilities (2 low, 8 moderate, 9 high, 1 critical)",
-  "",
-  "┌─────────┬──────────────────────────┬────────────────────┬──────────┬──────────┬───────┐",
-  "│ (index) │ repo                     │ kind               │ ts6      │ ts7      │ delta │",
-  "├─────────┼──────────────────────────┼────────────────────┼──────────┼──────────┼───────┤",
-  "│ 0       │ 'sindresorhus/type-fest' │ 'benchmark'        │ 57814    │ 30034    │ 1.92  │",
-  "│ 1       │ 'gvergnaud/ts-pattern'   │ 'benchmark'        │ 1327     │ 6304     │ 0.21  │",
-  "│ 2       │ 'supermacro/neverthrow'  │ 'migration-signal' │ 'failed' │ 'failed' │ null  │",
-  "└─────────┴──────────────────────────┴────────────────────┴──────────┴──────────┴───────┘",
+  "→ cloning sindresorhus/type-fest@v5.6.0",
+  "✓ verified sindresorhus/type-fest commit a5491644b32160f804dd10d0b44dad461037f4c1",
+  "→ installing sindresorhus/type-fest dependencies",
+  "→ installing TypeScript 6 and TypeScript 7 preview",
+  "→ warming sindresorhus/type-fest: TypeScript 6",
+  "→ measuring sindresorhus/type-fest: TypeScript 6",
+  "→ warming sindresorhus/type-fest: TypeScript 7 native preview",
+  "→ measuring sindresorhus/type-fest: TypeScript 7 native preview",
+  "→ cloning gvergnaud/ts-pattern@v5.9.0",
+  "✓ verified gvergnaud/ts-pattern commit 0e15315eafbbb813a91bad34496418846981c1b1",
+  "→ measuring gvergnaud/ts-pattern: TypeScript 6",
+  "→ measuring gvergnaud/ts-pattern: TypeScript 7 native preview",
+  "→ cloning supermacro/neverthrow@v8.2.0",
+  "✓ verified supermacro/neverthrow commit 1d4cc19ed2e6ba882e296385fe0175d642ec8c5d",
+  "Benchmark settings: 3 measured runs, 1 warmup run(s), speedup based on median.",
+  "┌─────────┬──────────────────────────┬─────────────┬─────────────┬──────────┬──────────┬───────┐",
+  "│ (index) │ repo                     │ ts6MedianMs │ ts7MedianMs │ ts6MinMs │ ts7MinMs │ delta │",
+  "├─────────┼──────────────────────────┼─────────────┼─────────────┼──────────┼──────────┼───────┤",
+  "│ 0       │ 'sindresorhus/type-fest' │ 59874       │ 31801       │ 58508    │ 30312    │ 1.88  │",
+  "│ 1       │ 'gvergnaud/ts-pattern'   │ 1611        │ 343         │ 1606     │ 336      │ 4.7   │",
+  "└─────────┴──────────────────────────┴─────────────┴─────────────┴──────────┴──────────┴───────┘",
+  "migration signal: supermacro/neverthrow failed on deprecated/removed compiler options",
   "Wrote benchmark-public-repos.json",
   "",
   "TS5107: moduleResolution=node10 is deprecated in TypeScript 6",
@@ -263,7 +264,7 @@ function terminalColor(line) {
     return "\x1b[1;37m";
   }
 
-  if (line.startsWith("")) {
+  if (line.startsWith("") || line.startsWith("→")) {
     return "\x1b[36m";
   }
 

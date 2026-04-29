@@ -137,10 +137,10 @@ Current matrix:
 
 It is intentionally separate from `npm run verify` because it performs network IO and takes longer than the local fixture checks.
 
-A local smoke run on Windows with Node 24 and `RUNS=1` measured:
+A local smoke run on Windows with Node 24, `RUNS=3`, and `WARMUPS=1` measured:
 
-- `sindresorhus/type-fest`: TypeScript 6 `57814ms`, TypeScript 7 native preview `30034ms`, roughly `1.92x` faster.
-- `gvergnaud/ts-pattern`: TypeScript 6 `1327ms`, TypeScript 7 native preview `6304ms`, roughly `0.21x`.
+- `sindresorhus/type-fest`: TypeScript 6 median `59874ms`, TypeScript 7 native preview median `31801ms`, roughly `1.88x` faster.
+- `gvergnaud/ts-pattern`: TypeScript 6 median `1611ms`, TypeScript 7 native preview median `343ms`, roughly `4.7x` faster.
 - `supermacro/neverthrow`: migration signal. TypeScript 6 reports deprecated options; TypeScript 7 reports those options as removed.
 
 Treat those as sample numbers only. The GitHub Actions artifact is the reproducible benchmark output for the published repo.

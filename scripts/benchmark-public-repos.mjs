@@ -3,7 +3,8 @@ import { mkdirSync, rmSync, writeFileSync } from "node:fs";
 import { join, resolve } from "node:path";
 import { performance } from "node:perf_hooks";
 
-const runs = Number.parseInt(process.env.RUNS ?? "2", 10);
+const runs = Number.parseInt(process.env.RUNS ?? "5", 10);
+const warmups = Number.parseInt(process.env.WARMUPS ?? "1", 10);
 const workspace = resolve(".tmp/public-repos");
 
 const projects = [
@@ -37,22 +38,27 @@ const projects = [
     expectedCommit: "1d4cc19ed2e6ba882e296385fe0175d642ec8c5d",
     category: "migration compatibility signal",
     why: "Shows removed/deprecated compiler options that matter during a TypeScript 7 migration.",
-    allowFailure: true,
+    mode: "migration",
     ts6: ["node", "node_modules/@typescript/typescript6/bin/tsc6", "--noEmit"],
     ts7: ["node", "node_modules/@typescript/native-preview/bin/tsgo.js", "--noEmit"],
   },
 ];
 
 function exec(command, args, options = {}) {
-  return execFileSync(command, args, {
-    encoding: "utf8",
-    stdio: options.stdio ?? "pipe",
-    cwd: options.cwd,
-    env: {
-      ...process.env,
-      CI: "1",
-    },
-  });
+  try {
+    return execFileSync(command, args, {
+      encoding: "utf8",
+      stdio: options.stdio ?? "pipe",
+      cwd: options.cwd,
+      env: {
+        ...process.env,
+        CI: "1",
+      },
+    });
+  } catch (error) {
+    const output = `${error.stdout ?? ""}\n${error.stderr ?? ""}`.trim();
+    throw new Error(output || error.message);
+  }
 }
 
 function run(command, args, cwd) {
@@ -100,8 +106,9 @@ function prepareProject(project) {
   mkdirSync(workspace, { recursive: true });
   safeRemove(directory);
 
+  console.log(`→ cloning ${project.repo}@${project.ref}`);
   exec("git", ["clone", "--depth", "1", "--branch", project.ref, project.url, directory], {
-    stdio: "inherit",
+    stdio: "pipe",
   });
 
   const commit = exec("git", ["rev-parse", "HEAD"], { cwd: directory }).trim();
@@ -110,14 +117,21 @@ function prepareProject(project) {
     throw new Error(`Unexpected commit for ${project.repo}: ${commit}`);
   }
 
-  execNpm(["install", "--ignore-scripts"], { cwd: directory, stdio: "inherit" });
+  console.log(`✓ verified ${project.repo} commit ${commit}`);
+  console.log(`→ installing ${project.repo} dependencies`);
+  execNpm(["install", "--ignore-scripts", "--no-audit", "--no-fund", "--loglevel", "error"], { cwd: directory });
+  console.log(`→ installing TypeScript 6 and TypeScript 7 preview`);
   execNpm([
     "install",
     "--ignore-scripts",
+    "--no-audit",
+    "--no-fund",
+    "--loglevel",
+    "error",
     "--no-save",
     "@typescript/typescript6@6.0.0",
     "@typescript/native-preview@beta",
-  ], { cwd: directory, stdio: "inherit" });
+  ], { cwd: directory });
 
   return { directory, commit };
 }
@@ -125,6 +139,16 @@ function prepareProject(project) {
 function measure(label, argv, directory, allowFailure) {
   const samples = [];
 
+  console.log(`→ warming ${label}`);
+  for (let index = 0; index < warmups; index += 1) {
+    const warmup = run(argv[0], argv.slice(1), directory);
+
+    if (warmup.status !== 0 && !allowFailure) {
+      throw new Error(`${label} warmup failed:\n${warmup.stdout}\n${warmup.stderr}`);
+    }
+  }
+
+  console.log(`→ measuring ${label}`);
   for (let index = 0; index < runs; index += 1) {
     const sample = run(argv[0], argv.slice(1), directory);
 
@@ -136,16 +160,22 @@ function measure(label, argv, directory, allowFailure) {
   }
 
   const successfulSamples = samples.filter((sample) => sample.status === 0);
-  const averageMs = successfulSamples.length > 0
-    ? Math.round(successfulSamples.reduce((sum, sample) => sum + sample.durationMs, 0) / successfulSamples.length)
+  const durations = successfulSamples.map((sample) => sample.durationMs).sort((a, b) => a - b);
+  const averageMs = durations.length > 0
+    ? Math.round(durations.reduce((sum, item) => sum + item, 0) / durations.length)
     : null;
+  const medianMs = median(durations);
+  const minMs = durations[0] ?? null;
 
   return {
     label,
     command: samples[0]?.command ?? argv.join(" "),
     runs,
+    warmups,
     status: samples.every((sample) => sample.status === 0) ? "passed" : "failed",
     averageMs,
+    medianMs,
+    minMs,
     samples: samples.map((sample) => ({
       status: sample.status,
       durationMs: sample.durationMs,
@@ -160,35 +190,68 @@ const report = {
   generatedAt: new Date().toISOString(),
   note: "TypeScript 7 is a preview. Treat these as CI measurements and migration signals, not final compiler guarantees.",
   runs,
-  projects: [],
+  warmups,
+  benchmarks: [],
+  migrationChecks: [],
 };
 
 for (const project of projects) {
   const prepared = prepareProject(project);
-  const ts6 = measure(`${project.repo}: TypeScript 6`, project.ts6, prepared.directory, project.allowFailure);
-  const ts7 = measure(`${project.repo}: TypeScript 7 native preview`, project.ts7, prepared.directory, project.allowFailure);
+  const allowFailure = project.mode === "migration";
+  const ts6 = measure(`${project.repo}: TypeScript 6`, project.ts6, prepared.directory, allowFailure);
+  const ts7 = measure(`${project.repo}: TypeScript 7 native preview`, project.ts7, prepared.directory, allowFailure);
 
-  report.projects.push({
+  const result = {
     repo: project.repo,
     ref: project.ref,
     commit: prepared.commit,
     category: project.category,
     why: project.why,
-    resultKind: project.allowFailure ? "migration-signal" : "benchmark",
+    resultKind: project.mode === "migration" ? "migration-signal" : "benchmark",
     ts6,
     ts7,
-    observedDelta: ts6.averageMs && ts7.averageMs
-      ? Number((ts6.averageMs / ts7.averageMs).toFixed(2))
+    observedDelta: ts6.medianMs && ts7.medianMs
+      ? Number((ts6.medianMs / ts7.medianMs).toFixed(2))
       : null,
-  });
+  };
+
+  if (project.mode === "migration") {
+    report.migrationChecks.push(result);
+  } else {
+    report.benchmarks.push(result);
+  }
 }
 
 writeFileSync("benchmark-public-repos.json", `${JSON.stringify(report, null, 2)}\n`);
-console.table(report.projects.map((project) => ({
+console.log(`Benchmark settings: ${runs} measured runs, ${warmups} warmup run(s), speedup based on median.`);
+console.table(report.benchmarks.map((project) => ({
   repo: project.repo,
-  kind: project.resultKind,
-  ts6: project.ts6.averageMs ?? project.ts6.status,
-  ts7: project.ts7.averageMs ?? project.ts7.status,
+  ts6MedianMs: project.ts6.medianMs,
+  ts7MedianMs: project.ts7.medianMs,
+  ts6MinMs: project.ts6.minMs,
+  ts7MinMs: project.ts7.minMs,
   delta: project.observedDelta,
 })));
+console.table(report.migrationChecks.map((project) => ({
+  repo: project.repo,
+  kind: project.resultKind,
+  ts6: project.ts6.status,
+  ts7: project.ts7.status,
+  ts6Diagnostic: project.ts6.samples.find((sample) => sample.diagnosticExcerpt)?.diagnosticExcerpt.split("\n")[0] ?? "",
+  ts7Diagnostic: project.ts7.samples.find((sample) => sample.diagnosticExcerpt)?.diagnosticExcerpt.split("\n")[0] ?? "",
+})));
 console.log("Wrote benchmark-public-repos.json");
+
+function median(values) {
+  if (values.length === 0) {
+    return null;
+  }
+
+  const middle = Math.floor(values.length / 2);
+
+  if (values.length % 2 === 1) {
+    return values[middle];
+  }
+
+  return Math.round((values[middle - 1] + values[middle]) / 2);
+}
