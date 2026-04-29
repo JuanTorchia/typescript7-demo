@@ -15,6 +15,132 @@ for (const button of document.querySelectorAll("[data-copy-target]")) {
   });
 }
 
+const workflowCode = document.getElementById("workflow-code");
+const packageManager = document.getElementById("package-manager");
+const typecheckPreset = document.getElementById("typecheck-preset");
+const customTypecheck = document.getElementById("custom-typecheck");
+const tsgoCommand = document.getElementById("tsgo-command");
+const nodeVersion = document.getElementById("node-version");
+
+const packageManagerConfig = {
+  npm: {
+    setup: `      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: NODE_VERSION
+          cache: npm`,
+    install: "npm ci",
+    installPreview: "npm install --no-save @typescript/native-preview@beta",
+  },
+  pnpm: {
+    setup: `      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: NODE_VERSION
+          cache: pnpm`,
+    install: "pnpm install --frozen-lockfile",
+    installPreview: "pnpm add -D @typescript/native-preview@beta",
+  },
+  yarn: {
+    setup: `      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: NODE_VERSION
+          cache: yarn`,
+    install: "yarn install --immutable",
+    installPreview: "yarn add -D @typescript/native-preview@beta",
+  },
+  bun: {
+    setup: `      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: NODE_VERSION`,
+    install: "bun install --frozen-lockfile",
+    installPreview: "bun add -d @typescript/native-preview@beta",
+  },
+};
+
+function selectedTypecheckCommand() {
+  if (typecheckPreset?.value === "custom") {
+    return customTypecheck?.value.trim() || "npm run typecheck";
+  }
+
+  return typecheckPreset?.value || "npm run typecheck";
+}
+
+function updateWorkflow() {
+  if (!workflowCode || !packageManager || !tsgoCommand || !nodeVersion) {
+    return;
+  }
+
+  const manager = packageManager.value;
+  const config = packageManagerConfig[manager] ?? packageManagerConfig.npm;
+  const setup = config.setup.replaceAll("NODE_VERSION", nodeVersion.value.trim() || "24");
+  const currentCommand = selectedTypecheckCommand();
+
+  workflowCode.textContent = `name: TypeScript 7 Preview Check
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+${setup}
+
+      - name: Install dependencies
+        run: ${config.install}
+
+      - name: Install TypeScript 7 native preview
+        run: ${config.installPreview}
+
+      - name: Current project check
+        run: ${currentCommand}
+
+      - name: TypeScript 7 native preview version
+        run: npx tsgo --version
+
+      - name: TypeScript 7 native preview check
+        run: ${tsgoCommand.value}
+
+      - name: Write summary
+        if: always()
+        run: |
+          {
+            echo "## TypeScript 7 Preview Check"
+            echo ""
+            echo "- Current command: ${currentCommand}"
+            echo "- Preview command: ${tsgoCommand.value}"
+            echo "- Package manager: ${manager}"
+          } >> "$GITHUB_STEP_SUMMARY"`;
+}
+
+for (const control of [packageManager, typecheckPreset, customTypecheck, tsgoCommand, nodeVersion]) {
+  control?.addEventListener("input", updateWorkflow);
+  control?.addEventListener("change", updateWorkflow);
+}
+
+updateWorkflow();
+
 const terminalOutput = document.getElementById("terminal-output");
 const replayButton = document.querySelector("[data-terminal-replay]");
 const terminalLines = [

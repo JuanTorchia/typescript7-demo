@@ -167,6 +167,7 @@ code {
 
 .benchmarks,
 .examples,
+.migration-findings,
 .claim-matrix,
 .usefulness,
 .ts7-pitch,
@@ -226,6 +227,12 @@ code {
   background: #e7f2d2;
   padding: 22px;
   box-shadow: 8px 8px 0 var(--line);
+}
+
+.artifact-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
 }
 
 .sample-result {
@@ -446,6 +453,40 @@ code {
   line-height: 1.55;
 }
 
+.findings-table {
+  border: 2px solid var(--line);
+  background: var(--panel);
+  box-shadow: var(--shadow);
+  overflow: hidden;
+}
+
+.finding-row {
+  display: grid;
+  grid-template-columns: 0.9fr 1fr 1fr 1.25fr;
+  gap: 14px;
+  padding: 16px;
+  border-top: 2px solid var(--line);
+}
+
+.finding-row:first-child {
+  border-top: 0;
+}
+
+.finding-head {
+  background: var(--green);
+  color: white;
+  font-weight: 850;
+}
+
+.finding-row span {
+  color: var(--muted);
+  line-height: 1.45;
+}
+
+.finding-head span {
+  color: white;
+}
+
 .example {
   border: 2px solid var(--line);
   background: var(--panel);
@@ -463,6 +504,40 @@ code {
   grid-template-columns: 0.78fr 1.22fr;
   gap: 34px;
   align-items: start;
+}
+
+.workflow-controls {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+  margin: 18px 0;
+}
+
+.workflow-controls label {
+  display: grid;
+  gap: 6px;
+  font-size: 0.78rem;
+  font-weight: 850;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.workflow-controls select,
+.workflow-controls input {
+  width: 100%;
+  border: 2px solid var(--line);
+  background: #fffaf0;
+  color: var(--ink);
+  padding: 11px 12px;
+  font: inherit;
+  font-size: 0.95rem;
+  font-weight: 650;
+  letter-spacing: 0;
+  text-transform: none;
+}
+
+.custom-command {
+  grid-column: 1 / -1;
 }
 
 ul {
@@ -526,6 +601,7 @@ pre code {
 
   .grid,
   .row,
+  .finding-row,
   .example-grid,
   .claim-grid,
   .value-grid,
@@ -538,6 +614,10 @@ pre code {
   }
 
   .decision-list article {
+    grid-template-columns: 1fr;
+  }
+
+  .workflow-controls {
     grid-template-columns: 1fr;
   }
 

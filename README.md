@@ -25,6 +25,9 @@ Use this repo as an upgrade readiness check before TypeScript 7 becomes an upgra
 - Find deprecated or removed compiler options early.
 - Compare TypeScript 6 and TypeScript 7 native preview on real public repositories.
 - Generate a private-repo-safe GitHub Actions workflow.
+- Customize that workflow for `npm`, `pnpm`, `yarn`, or `bun`.
+- Use real commands such as `npm run typecheck`, `tsc -b`, `turbo typecheck`, `vue-tsc`, or `next build`.
+- Review concrete migration findings such as `moduleResolution=node10`, `baseUrl`, and `isolatedDeclarations`.
 - Track preview behavior over time while TypeScript 7 is still beta.
 - Build evidence for whether faster type-checking matters in your codebase.
 

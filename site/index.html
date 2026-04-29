@@ -261,20 +261,27 @@
 
         <div class="artifact-card">
           <div>
-            <h3>Where are the numbers?</h3>
+            <h3>Latest benchmark artifacts</h3>
             <p>
-              Each CI run produces fresh benchmark artifacts, including a dedicated result
-              for the public Type-Fest repository. This is better than shipping stale
-              numbers because TypeScript 7 is a moving preview and performance changes
-              across machines, package caches, and project shapes.
+              Each CI run uploads raw JSON artifacts. Open the latest run, download
+              <code>typescript-7-public-repository-benchmark</code>, and inspect the exact
+              samples behind the page.
             </p>
           </div>
-          <a
-            class="button secondary"
-            href="https://github.com/JuanTorchia/typescript7-demo/actions/workflows/typescript-7-open-source.yml"
-          >
-            Open latest CI run
-          </a>
+          <div class="artifact-actions">
+            <a
+              class="button secondary"
+              href="https://github.com/JuanTorchia/typescript7-demo/actions/workflows/typescript-7-open-source.yml"
+            >
+              Open workflow runs
+            </a>
+            <a
+              class="button secondary"
+              href="https://github.com/JuanTorchia/typescript7-demo/actions"
+            >
+              View artifacts
+            </a>
+          </div>
         </div>
 
         <div class="sample-result">
@@ -411,6 +418,37 @@ TS5102: baseUrl has been removed</code></pre>
         </div>
       </section>
 
+      <section class="migration-findings">
+        <span class="label">Migration findings</span>
+        <h2>Concrete TypeScript 7 cleanup signals.</h2>
+        <div class="findings-table">
+          <div class="finding-row finding-head">
+            <span>Finding</span>
+            <span>TypeScript 6 signal</span>
+            <span>TypeScript 7 signal</span>
+            <span>Suggested action</span>
+          </div>
+          <div class="finding-row">
+            <strong><code>moduleResolution=node10</code></strong>
+            <span>Deprecated option warning: <code>TS5107</code></span>
+            <span>Removed option error: <code>TS5108</code></span>
+            <span>Move to a supported module resolution mode such as <code>node16</code>, <code>nodenext</code>, or <code>bundler</code>.</span>
+          </div>
+          <div class="finding-row">
+            <strong><code>baseUrl</code></strong>
+            <span>Deprecated option warning: <code>TS5101</code></span>
+            <span>Removed option error: <code>TS5102</code></span>
+            <span>Prefer explicit <code>paths</code> mappings, for example <code>"paths": {"*": ["./src/*"]}</code>.</span>
+          </div>
+          <div class="finding-row">
+            <strong><code>isolatedDeclarations</code></strong>
+            <span>Can be adopted early as a declaration-safety check.</span>
+            <span>Requires explicit exported API annotations.</span>
+            <span>Add return types to exported functions and explicit types to exported constants where needed.</span>
+          </div>
+        </div>
+      </section>
+
       <section class="decision-guide">
         <span class="label">Decision guide</span>
         <h2>What should you do with the result?</h2>
@@ -475,49 +513,52 @@ TS5102: baseUrl has been removed</code></pre>
           </ul>
         </div>
         <div class="panel">
-          <h3>Generated workflow</h3>
+          <h3>Configurable workflow generator</h3>
           <p>
-            This workflow compares your current type-check command with
-            <code>tsgo --noEmit</code>.
+            Choose your package manager and the command your repo actually uses. The YAML
+            updates before you copy it.
           </p>
+          <div class="workflow-controls">
+            <label>
+              Package manager
+              <select id="package-manager">
+                <option value="npm">npm</option>
+                <option value="pnpm">pnpm</option>
+                <option value="yarn">yarn</option>
+                <option value="bun">bun</option>
+              </select>
+            </label>
+            <label>
+              Current type-check command
+              <select id="typecheck-preset">
+                <option value="npm run typecheck">npm run typecheck</option>
+                <option value="npx tsc -b">npx tsc -b</option>
+                <option value="npx turbo typecheck">npx turbo typecheck</option>
+                <option value="npx vue-tsc --noEmit">npx vue-tsc --noEmit</option>
+                <option value="npm run build">npm run build</option>
+                <option value="custom">Custom command</option>
+              </select>
+            </label>
+            <label class="custom-command">
+              Custom command
+              <input id="custom-typecheck" type="text" value="npm run typecheck" />
+            </label>
+            <label>
+              TypeScript 7 command
+              <select id="tsgo-command">
+                <option value="npx tsgo --noEmit">npx tsgo --noEmit</option>
+                <option value="npx tsgo -b --noEmit">npx tsgo -b --noEmit</option>
+                <option value="npx tsgo --noEmit --checkers 4">npx tsgo --noEmit --checkers 4</option>
+                <option value="npx tsgo --noEmit --singleThreaded">npx tsgo --noEmit --singleThreaded</option>
+              </select>
+            </label>
+            <label>
+              Node version
+              <input id="node-version" type="text" value="24" />
+            </label>
+          </div>
           <button class="copy" data-copy-target="workflow-code">Copy YAML</button>
-          <pre><code id="workflow-code">name: TypeScript 7 Preview Check
-
-on:
-  workflow_dispatch:
-
-permissions:
-  contents: read
-
-jobs:
-  check:
-    runs-on: ubuntu-latest
-    timeout-minutes: 10
-
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
-      - name: Setup Node
-        uses: actions/setup-node@v4
-        with:
-          node-version: 24
-          cache: npm
-
-      - name: Install dependencies
-        run: npm ci
-
-      - name: Install TypeScript 7 native preview
-        run: npm install --no-save @typescript/native-preview@beta
-
-      - name: Current project type-check
-        run: npm run typecheck
-
-      - name: TypeScript 7 native preview version
-        run: npx tsgo --version
-
-      - name: TypeScript 7 native preview check
-        run: npx tsgo --noEmit</code></pre>
+          <pre><code id="workflow-code"></code></pre>
         </div>
       </section>
 
