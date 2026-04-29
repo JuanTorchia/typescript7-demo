@@ -144,25 +144,25 @@ updateWorkflow();
 const terminalOutput = document.getElementById("terminal-output");
 const replayButton = document.querySelector("[data-terminal-replay]");
 const terminalLines = [
-  { type: "prompt", command: "npm run bench:public" },
-  { type: "muted", text: "> node scripts/benchmark-public-repos.mjs" },
-  { type: "info", text: "cloning sindresorhus/type-fest@v5.6.0" },
-  { type: "ok", text: "verified commit a5491644b32160f804dd10d0b44dad461037f4c1" },
-  { type: "muted", text: "installing dependencies and TypeScript preview packages" },
-  { type: "section", text: "benchmark target: sindresorhus/type-fest" },
-  { type: "cmd", text: "node --max-old-space-size=6144 .../tsc6 -p tsconfig.json --noEmit" },
-  { type: "ok", text: "TypeScript 6 passed in 62039ms" },
-  { type: "cmd", text: "node .../@typescript/native-preview/bin/tsgo.js -p tsconfig.json --noEmit" },
-  { type: "ok", text: "TypeScript 7 preview passed in 40537ms" },
-  { type: "metric", text: "observed delta: ~1.56x faster" },
-  { type: "info", text: "cloning gvergnaud/ts-pattern@v5.9.0" },
-  { type: "ok", text: "TypeScript 6 passed in 1669ms" },
-  { type: "ok", text: "TypeScript 7 preview passed in 652ms" },
-  { type: "metric", text: "observed delta: ~2.56x faster" },
-  { type: "info", text: "cloning supermacro/neverthrow@v8.2.0" },
-  { type: "warn", text: "TypeScript 6: moduleResolution=node10 and baseUrl are deprecated" },
-  { type: "fail", text: "TypeScript 7: moduleResolution=node10 and baseUrl have been removed" },
-  { type: "ok", text: "wrote benchmark-public-repos.json" },
+  " juanchi   typescript7-demo   main  npm run bench:public",
+  "  > node scripts/benchmark-public-repos.mjs",
+  " cloning sindresorhus/type-fest@v5.6.0",
+  "✓ verified commit a5491644b32160f804dd10d0b44dad461037f4c1",
+  "  installing dependencies and TypeScript preview packages",
+  "◆ benchmark target: sindresorhus/type-fest",
+  "  node --max-old-space-size=6144 .../tsc6 -p tsconfig.json --noEmit",
+  "✓ TypeScript 6 passed in 62039ms",
+  "  node .../@typescript/native-preview/bin/tsgo.js -p tsconfig.json --noEmit",
+  "✓ TypeScript 7 preview passed in 40537ms",
+  "↳ observed delta: ~1.56x faster",
+  " cloning gvergnaud/ts-pattern@v5.9.0",
+  "✓ TypeScript 6 passed in 1669ms",
+  "✓ TypeScript 7 preview passed in 652ms",
+  "↳ observed delta: ~2.56x faster",
+  " cloning supermacro/neverthrow@v8.2.0",
+  "⚠ TypeScript 6: moduleResolution=node10 and baseUrl are deprecated",
+  "✗ TypeScript 7: moduleResolution=node10 and baseUrl have been removed",
+  "✓ wrote benchmark-public-repos.json",
 ];
 
 let replayTimer;
@@ -235,49 +235,43 @@ function ensureTerminal() {
 
 function writeTerminalLine(line) {
   if (!terminal) {
-    terminalOutput.textContent += `${plainTerminalLine(line)}\n`;
+    terminalOutput.textContent += `${line}\n`;
     return;
   }
 
-  if (line.type === "prompt") {
-    terminal.writeln(
-      "\x1b[48;5;31m\x1b[38;5;15m juanchi \x1b[0m" +
-        "\x1b[48;5;237m\x1b[38;5;15m \ue0b1 typescript7-demo \x1b[0m" +
-        "\x1b[48;5;64m\x1b[38;5;15m \ue0a0 main \x1b[0m " +
-        `\x1b[1;37m${line.command}\x1b[0m`,
-    );
-    return;
-  }
-
-  const color = {
-    muted: "\x1b[90m",
-    info: "\x1b[36m",
-    ok: "\x1b[32m",
-    section: "\x1b[1;35m",
-    cmd: "\x1b[37m",
-    metric: "\x1b[1;33m",
-    warn: "\x1b[33m",
-    fail: "\x1b[31m",
-  }[line.type] ?? "\x1b[37m";
-
-  const prefix = {
-    info: "",
-    ok: "✓",
-    section: "◆",
-    metric: "↳",
-    warn: "⚠",
-    fail: "✗",
-  }[line.type] ?? " ";
-
-  terminal.writeln(`${color}${prefix} ${line.text}\x1b[0m`);
+  terminal.writeln(`${terminalColor(line)}${line}\x1b[0m`);
 }
 
-function plainTerminalLine(line) {
-  if (line.type === "prompt") {
-    return `juanchi typescript7-demo main > ${line.command}`;
+function terminalColor(line) {
+  if (line.startsWith(" juanchi")) {
+    return "\x1b[1;37m";
   }
 
-  return line.text;
+  if (line.startsWith("")) {
+    return "\x1b[36m";
+  }
+
+  if (line.startsWith("✓")) {
+    return "\x1b[32m";
+  }
+
+  if (line.startsWith("◆")) {
+    return "\x1b[1;35m";
+  }
+
+  if (line.startsWith("↳")) {
+    return "\x1b[1;33m";
+  }
+
+  if (line.startsWith("⚠")) {
+    return "\x1b[33m";
+  }
+
+  if (line.startsWith("✗")) {
+    return "\x1b[31m";
+  }
+
+  return "\x1b[90m";
 }
 
 replayButton?.addEventListener("click", replayTerminal);
