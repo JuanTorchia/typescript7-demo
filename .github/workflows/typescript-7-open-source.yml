@@ -1,4 +1,4 @@
-name: TypeScript 7 Open Source Fixture
+name: TypeScript 7 Fast Check
 
 on:
   push:
@@ -11,10 +11,10 @@ permissions:
   contents: read
 
 jobs:
-  type-fest-fixture:
-    name: TypeScript 7 public checks
+  verify:
+    name: Verify local fixtures
     runs-on: ubuntu-latest
-    timeout-minutes: 35
+    timeout-minutes: 15
 
     steps:
       - name: Checkout repository
@@ -34,41 +34,20 @@ jobs:
           npx tsc6 --version
           npx tsgo --version
 
-      - name: Type-check local project with TypeScript 6
-        run: npm run typecheck:ts6
+      - name: Run fast verification
+        run: npm run verify
 
-      - name: Type-check local project with TypeScript 7 native preview
-        run: npm run typecheck:ts7
-
-      - name: Type-check Type-Fest fixture with TypeScript 6
-        run: npm run typecheck:oss:ts6
-
-      - name: Type-check Type-Fest fixture with TypeScript 7 native preview
-        run: npm run typecheck:oss:ts7
-
-      - name: Run benchmark
+      - name: Run local benchmark
         run: npm run bench
 
-      - name: Upload benchmark result
+      - name: Run migration scanner
+        run: npm run scan:migration
+
+      - name: Upload fast check artifacts
         uses: actions/upload-artifact@v4
+        if: always()
         with:
-          name: typescript-7-local-fixture-benchmark
-          path: benchmark-results.json
-
-      - name: Run controlled synthetic benchmark
-        run: npm run bench:synthetic
-
-      - name: Upload controlled synthetic benchmark result
-        uses: actions/upload-artifact@v4
-        with:
-          name: typescript-7-controlled-synthetic-benchmark
-          path: benchmark-synthetic.json
-
-      - name: Run public repository benchmark
-        run: npm run bench:public
-
-      - name: Upload public repository benchmark result
-        uses: actions/upload-artifact@v4
-        with:
-          name: typescript-7-public-repository-benchmark
-          path: benchmark-public-repos.json
+          name: typescript-7-fast-check
+          path: |
+            benchmark-results.json
+            migration-findings.json

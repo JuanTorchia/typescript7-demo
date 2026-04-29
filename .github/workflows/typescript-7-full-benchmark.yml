@@ -1,0 +1,85 @@
+name: TypeScript 7 Full Benchmark
+
+on:
+  workflow_dispatch:
+    inputs:
+      runs:
+        description: Measured runs per benchmark target
+        required: false
+        default: "3"
+      warmups:
+        description: Warmup runs per benchmark target
+        required: false
+        default: "1"
+  schedule:
+    - cron: "0 10 * * 1"
+
+permissions:
+  contents: read
+
+jobs:
+  benchmark:
+    name: Full benchmark matrix
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+
+    env:
+      RUNS: ${{ github.event.inputs.runs || '3' }}
+      WARMUPS: ${{ github.event.inputs.warmups || '1' }}
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Show compiler versions
+        run: |
+          npx tsc6 --version
+          npx tsgo --version
+
+      - name: Run local benchmark
+        run: npm run bench
+
+      - name: Run TypeScript 7 tuning matrix
+        run: npm run bench:tuning
+
+      - name: Run controlled synthetic benchmark
+        run: npm run bench:synthetic
+
+      - name: Run public repository benchmark
+        run: npm run bench:public
+
+      - name: Run migration scanner
+        run: npm run scan:migration
+
+      - name: Generate Markdown report
+        run: npm run report
+
+      - name: Build site data snapshot
+        run: npm run site:data
+
+      - name: Build history snapshot
+        run: npm run history:update
+
+      - name: Upload full benchmark artifacts
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: typescript-7-full-benchmark
+          path: |
+            benchmark-results.json
+            benchmark-tuning.json
+            benchmark-synthetic.json
+            benchmark-public-repos.json
+            migration-findings.json
+            benchmark-report.md
+            site/data/latest-results.json
+            site/data/history.json

@@ -1,0 +1,53 @@
+{
+  "updatedAt": "2026-04-29T03:19:05.570Z",
+  "runs": [
+    {
+      "capturedAt": "2026-04-29T03:19:05.570Z",
+      "sourceGeneratedAt": "2026-04-29T03:16:40.641Z",
+      "typescript7Version": "Local project: TypeScript 7 tsgo --noEmit",
+      "synthetic": [
+        {
+          "id": "template-literal-stress",
+          "delta": 2.57,
+          "ts6MedianMs": 44009,
+          "ts7MedianMs": 17097
+        },
+        {
+          "id": "many-modules",
+          "delta": 4.04,
+          "ts6MedianMs": 3468,
+          "ts7MedianMs": 858
+        },
+        {
+          "id": "project-references",
+          "delta": 2.39,
+          "ts6MedianMs": 1487,
+          "ts7MedianMs": 622
+        }
+      ],
+      "publicRepos": [
+        {
+          "repo": "sindresorhus/type-fest",
+          "ref": "v5.6.0",
+          "delta": 1.63,
+          "ts6MedianMs": 125026,
+          "ts7MedianMs": 76685
+        },
+        {
+          "repo": "gvergnaud/ts-pattern",
+          "ref": "v5.9.0",
+          "delta": 1.89,
+          "ts6MedianMs": 5294,
+          "ts7MedianMs": 2795
+        },
+        {
+          "repo": "ts-essentials/ts-essentials",
+          "ref": "v9.4.2",
+          "delta": 1.18,
+          "ts6MedianMs": 1369,
+          "ts7MedianMs": 1164
+        }
+      ]
+    }
+  ]
+}

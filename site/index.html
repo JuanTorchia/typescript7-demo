@@ -173,7 +173,8 @@
           <h2>Public and controlled benchmarks</h2>
           <p>
             CI now checks multiple public repositories: <code>type-fest</code>,
-            <code>ts-pattern</code>, and <code>neverthrow</code>. It also generates
+            <code>ts-pattern</code>, <code>ts-essentials</code>, <code>neverthrow</code>,
+            and <code>ts-toolbelt</code>. It also generates
             controlled synthetic corpora for template-literal types, many modules, and
             project references.
           </p>
@@ -261,10 +262,22 @@
             <span>Deep inference, union narrowing, and exhaustive match types.</span>
           </div>
           <div class="row">
+            <span>Public repo: ts-essentials/ts-essentials</span>
+            <code>tsc6 -p tsconfig.prod.json</code>
+            <code>tsgo -p tsconfig.prod.json</code>
+            <span>Utility types package with production declaration-oriented checks.</span>
+          </div>
+          <div class="row">
             <span>Public repo: supermacro/neverthrow</span>
             <code>tsc6 --noEmit</code>
             <code>tsgo --noEmit</code>
             <span>Migration signal for deprecated or removed compiler options.</span>
+          </div>
+          <div class="row">
+            <span>Public repo: millsp/ts-toolbelt</span>
+            <code>tsc6 -p tsconfig.json</code>
+            <code>tsgo -p tsconfig.json</code>
+            <span>Legacy utility-type migration signal for removed compiler options.</span>
           </div>
         </div>
 
@@ -283,7 +296,13 @@
               class="button secondary"
               href="https://github.com/JuanTorchia/typescript7-demo/actions/workflows/typescript-7-open-source.yml"
             >
-              Open workflow runs
+              Open fast checks
+            </a>
+            <a
+              class="button secondary"
+              href="https://github.com/JuanTorchia/typescript7-demo/actions/workflows/typescript-7-full-benchmark.yml"
+            >
+              Open full benchmarks
             </a>
             <a
               class="button secondary"
@@ -314,6 +333,21 @@
           </div>
         </div>
 
+        <div class="live-results" id="live-results">
+          <div>
+            <span class="metric-label">Data-backed view</span>
+            <h3>Latest committed benchmark JSON</h3>
+            <p>
+              This table is rendered from <code>site/data/latest-results.json</code>, not
+              typed into the HTML. CI can refresh the same data file from raw benchmark
+              artifacts.
+            </p>
+          </div>
+          <div class="live-table" id="latest-results-table">
+            <span class="muted">Loading benchmark data...</span>
+          </div>
+        </div>
+
         <div class="terminal-demo">
           <div class="terminal-head">
             <div>
@@ -327,6 +361,63 @@
             This is a replay of a measured run. The real benchmark runs in GitHub Actions and
             uploads <code>benchmark-public-repos.json</code>.
           </p>
+        </div>
+      </section>
+
+      <section class="methodology" id="methodology">
+        <span class="label">Methodology</span>
+        <h2>How the numbers are produced.</h2>
+        <div class="method-grid">
+          <article>
+            <strong>Same machine, same run</strong>
+            <p>Speedups compare TypeScript 6 and TypeScript 7 preview on the same runner.</p>
+          </article>
+          <article>
+            <strong>Median-first reporting</strong>
+            <p>Benchmarks keep raw samples and use median values when multiple runs exist.</p>
+          </article>
+          <article>
+            <strong>Pinned public repos</strong>
+            <p>Public projects are cloned at fixed refs and verified against expected commits.</p>
+          </article>
+          <article>
+            <strong>Inspectable synthetic inputs</strong>
+            <p>Generated corpora stay under <code>.tmp/synthetic-corpus</code> after each run.</p>
+          </article>
+          <article>
+            <strong>No universal claims</strong>
+            <p>Machine, OS, package cache, repo size, and compiler preview version all matter.</p>
+          </article>
+          <article>
+            <strong>Migration failures count</strong>
+            <p>Config failures are reported as useful upgrade signals, not hidden from the table.</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="tuning-matrix" id="tuning">
+        <span class="label">Compiler tuning</span>
+        <h2>Flags worth testing before TypeScript 7 lands.</h2>
+        <p>
+          The repo includes a tuning matrix for <code>--checkers</code>,
+          <code>--singleThreaded</code>, and <code>--builders</code>. These flags are preview
+          behavior, but they are exactly the knobs large repos should start measuring.
+        </p>
+        <div class="live-table" id="tuning-results-table">
+          <span class="muted">Loading tuning data...</span>
+        </div>
+        <pre><code>npm run bench:tuning</code></pre>
+      </section>
+
+      <section class="trend-section" id="history">
+        <span class="label">Preview trend</span>
+        <h2>Track changes while the compiler is still moving.</h2>
+        <p>
+          The full benchmark workflow runs weekly. Published history can be refreshed with
+          <code>npm run history:update</code> after regenerating site data.
+        </p>
+        <div class="live-table" id="history-results-table">
+          <span class="muted">Loading history data...</span>
         </div>
       </section>
 
@@ -358,9 +449,32 @@
           <article>
             <h3>Config compatibility</h3>
             <p>
-              neverthrow intentionally stays in the matrix because it surfaces migration
-              issues such as removed or deprecated compiler options.
+              neverthrow and ts-toolbelt intentionally stay in the matrix because they
+              surface migration issues such as removed or deprecated compiler options.
             </p>
+          </article>
+        </div>
+      </section>
+
+      <section class="use-cases">
+        <span class="label">Use cases</span>
+        <h2>Which result should you care about?</h2>
+        <div class="case-grid">
+          <article>
+            <h3>Type-heavy library maintainers</h3>
+            <p>Look at Type-Fest, ts-pattern, and template-literal stress results.</p>
+          </article>
+          <article>
+            <h3>Monorepo owners</h3>
+            <p>Start with project references and <code>--builders</code> tuning.</p>
+          </article>
+          <article>
+            <h3>Slow CI teams</h3>
+            <p>Run the workflow manually first, then add a weekly scheduled check.</p>
+          </article>
+          <article>
+            <h3>Old tsconfig projects</h3>
+            <p>Run the migration scanner before caring about performance numbers.</p>
           </article>
         </div>
       </section>
@@ -428,9 +542,9 @@ benchmark-synthetic.json</code></pre>
           <article class="example">
             <h3>Migration config errors</h3>
             <p>
-              The public neverthrow check is intentionally useful even when it fails: it
-              shows deprecated TypeScript 6 options that become removed TypeScript 7
-              options.
+              The public neverthrow and ts-toolbelt checks are intentionally useful even
+              when they fail: they show deprecated TypeScript 6 options that become removed
+              TypeScript 7 options.
             </p>
             <pre><code>TS5107: moduleResolution=node10 is deprecated
 TS5101: baseUrl is deprecated
@@ -469,6 +583,17 @@ TS5102: baseUrl has been removed</code></pre>
             <span>Requires explicit exported API annotations.</span>
             <span>Add return types to exported functions and explicit types to exported constants where needed.</span>
           </div>
+        </div>
+        <div class="scanner-card">
+          <div>
+            <h3>Local scanner</h3>
+            <p>
+              Run the scanner before the benchmark if your project has old TypeScript
+              settings. It reads local <code>tsconfig*.json</code> files and writes
+              <code>migration-findings.json</code>.
+            </p>
+          </div>
+          <pre><code>npm run scan:migration</code></pre>
         </div>
       </section>
 
@@ -599,6 +724,17 @@ TS5102: baseUrl has been removed</code></pre>
             stricter type behavior, project-reference edge cases, or preview limitations.
           </p>
         </div>
+      </section>
+
+      <section class="reporting">
+        <span class="label">Portable report</span>
+        <h2>Generate a Markdown report for issues or RFCs.</h2>
+        <p>
+          The report command merges local, synthetic, public, tuning, and migration outputs
+          into <code>benchmark-report.md</code>.
+        </p>
+        <pre><code>npm run bench:full
+npm run report</code></pre>
       </section>
     </main>
     <script src="./vendor/xterm/xterm.js"></script>

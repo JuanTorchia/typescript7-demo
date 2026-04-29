@@ -7,6 +7,14 @@ function run(command) {
 }
 
 describe("TypeScript 7 native preview", () => {
+  it("keeps project scripts syntactically valid", () => {
+    assert.doesNotThrow(() => run("node --check scripts/scan-migration.mjs"));
+    assert.doesNotThrow(() => run("node --check scripts/benchmark-tuning.mjs"));
+    assert.doesNotThrow(() => run("node --check scripts/generate-report.mjs"));
+    assert.doesNotThrow(() => run("node --check scripts/write-site-data.mjs"));
+    assert.doesNotThrow(() => run("node --check site/main.js"));
+  });
+
   it("uses the real TypeScript 6 compiler behind tsc6", () => {
     const version = run("node node_modules/@typescript/typescript6/bin/tsc6 --version").trim();
 
@@ -44,5 +52,12 @@ describe("TypeScript 7 native preview", () => {
 
     assert.notEqual(status, 0);
     assert.match(output, /isolatedDeclarations|explicit/i);
+  });
+
+  it("scans local tsconfig files for migration findings", () => {
+    const output = run("npm run -s scan:migration");
+
+    assert.match(output, /Scanned 4 tsconfig file/);
+    assert.match(output, /isolatedDeclarations-readiness/);
   });
 });

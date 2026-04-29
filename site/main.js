@@ -141,6 +141,8 @@ for (const control of [packageManager, typecheckPreset, customTypecheck, tsgoCom
 
 updateWorkflow();
 
+loadLatestResults();
+
 const terminalOutput = document.getElementById("terminal-output");
 const replayButton = document.querySelector("[data-terminal-replay]");
 const terminalLines = [
@@ -163,18 +165,26 @@ const terminalLines = [
   "→ installing TypeScript 6 and TypeScript 7 preview",
   "→ measuring gvergnaud/ts-pattern: TypeScript 6",
   "→ measuring gvergnaud/ts-pattern: TypeScript 7 native preview",
+  "→ cloning ts-essentials/ts-essentials@v9.4.2",
+  "✓ verified ts-essentials/ts-essentials commit 8e625d9f554fe2607e5cf53706bdf23301643247",
+  "→ installing ts-essentials/ts-essentials dependencies",
+  "→ installing TypeScript 6 and TypeScript 7 preview",
+  "→ measuring ts-essentials/ts-essentials: TypeScript 6",
+  "→ measuring ts-essentials/ts-essentials: TypeScript 7 native preview",
   "→ cloning supermacro/neverthrow@v8.2.0",
   "✓ verified supermacro/neverthrow commit 1d4cc19ed2e6ba882e296385fe0175d642ec8c5d",
-  "→ installing supermacro/neverthrow dependencies",
+  "→ skipping supermacro/neverthrow dependencies; this is a config-only migration check",
+  "→ installing TypeScript 6 and TypeScript 7 preview",
+  "→ cloning millsp/ts-toolbelt@v9.5.1",
+  "✓ verified millsp/ts-toolbelt commit 359e223c1a4a38345c989e3abe72257d41bda989",
+  "→ skipping millsp/ts-toolbelt dependencies; this is a config-only migration check",
   "→ installing TypeScript 6 and TypeScript 7 preview",
   "Benchmark settings: 1 measured runs, 0 warmup run(s), speedup based on median.",
-  "┌─────────┬──────────────────────────┬─────────────┬─────────────┬──────────┬──────────┬───────┐",
-  "│ (index) │ repo                     │ ts6MedianMs │ ts7MedianMs │ ts6MinMs │ ts7MinMs │ delta │",
-  "├─────────┼──────────────────────────┼─────────────┼─────────────┼──────────┼──────────┼───────┤",
-  "│ 0       │ 'sindresorhus/type-fest' │ 73994       │ 45461       │ 73994    │ 45461    │ 1.63  │",
-  "│ 1       │ 'gvergnaud/ts-pattern'   │ 2474        │ 685         │ 2474     │ 685      │ 3.61  │",
-  "└─────────┴──────────────────────────┴─────────────┴─────────────┴──────────┴──────────┴───────┘",
-  "migration signal: supermacro/neverthrow failed on deprecated/removed compiler options",
+  "repo                            ts6MedianMs  ts7MedianMs  delta",
+  "sindresorhus/type-fest          125026       76685        1.63",
+  "gvergnaud/ts-pattern            5294         2795         1.89",
+  "ts-essentials/ts-essentials     1369         1164         1.18",
+  "migration signal: neverthrow and ts-toolbelt failed on deprecated/removed compiler options",
   "Wrote benchmark-public-repos.json",
   "",
   "TS5107: moduleResolution=node10 is deprecated in TypeScript 6",
@@ -309,3 +319,135 @@ function terminalColor(line) {
 
 replayButton?.addEventListener("click", replayTerminal);
 replayTerminal();
+
+async function loadLatestResults() {
+  const latestTable = document.getElementById("latest-results-table");
+  const tuningTable = document.getElementById("tuning-results-table");
+  const historyTable = document.getElementById("history-results-table");
+
+  if (!latestTable && !tuningTable && !historyTable) {
+    return;
+  }
+
+  try {
+    const response = await fetch("./data/latest-results.json", { cache: "no-store" });
+
+    if (!response.ok) {
+      throw new Error(`Could not load latest-results.json: ${response.status}`);
+    }
+
+    const data = await response.json();
+    renderLatestResults(latestTable, data);
+    renderTuningResults(tuningTable, data);
+    await renderHistoryResults(historyTable);
+  } catch (error) {
+    const message = `<span class="muted">${escapeHtml(error.message)}</span>`;
+
+    if (latestTable) {
+      latestTable.innerHTML = message;
+    }
+
+    if (tuningTable) {
+      tuningTable.innerHTML = message;
+    }
+
+    if (historyTable) {
+      historyTable.innerHTML = message;
+    }
+  }
+}
+
+function renderLatestResults(container, data) {
+  if (!container) {
+    return;
+  }
+
+  const syntheticRows = data.synthetic?.benchmarks?.map((item) => [
+    item.id,
+    item.category,
+    `${item.ts6.medianMs}ms`,
+    `${item.ts7.medianMs}ms`,
+    `${item.observedDelta}x`,
+  ]) ?? [];
+
+  const publicRows = data.publicRepos?.benchmarks?.map((item) => [
+    item.repo,
+    item.category,
+    `${item.ts6.medianMs}ms`,
+    `${item.ts7.medianMs}ms`,
+    `${item.observedDelta}x`,
+  ]) ?? [];
+
+  container.innerHTML = tableHtml(
+    ["Target", "Category", "TS6", "TS7 preview", "Delta"],
+    [...syntheticRows, ...publicRows].slice(0, 8),
+  );
+}
+
+function renderTuningResults(container, data) {
+  if (!container) {
+    return;
+  }
+
+  const rows = data.tuning?.variants?.map((item) => [
+    item.label,
+    item.category,
+    `${item.medianMs}ms`,
+    `${item.minMs}ms`,
+    `${item.averageMs}ms`,
+    formatPeakRss(item.samples),
+  ]) ?? [];
+
+  container.innerHTML = tableHtml(["Variant", "Category", "Median", "Min", "Average", "Peak RSS"], rows);
+}
+
+async function renderHistoryResults(container) {
+  if (!container) {
+    return;
+  }
+
+  const response = await fetch("./data/history.json", { cache: "no-store" });
+
+  if (!response.ok) {
+    container.innerHTML = '<span class="muted">No published history yet.</span>';
+    return;
+  }
+
+  const history = await response.json();
+  const rows = history.runs?.slice(0, 6).map((run) => {
+    const bestPublic = [...(run.publicRepos ?? [])].sort((a, b) => (b.delta ?? 0) - (a.delta ?? 0))[0];
+    const bestSynthetic = [...(run.synthetic ?? [])].sort((a, b) => (b.delta ?? 0) - (a.delta ?? 0))[0];
+
+    return [
+      new Date(run.capturedAt).toLocaleDateString("en-US"),
+      bestPublic ? `${bestPublic.repo}: ${bestPublic.delta}x` : "n/a",
+      bestSynthetic ? `${bestSynthetic.id}: ${bestSynthetic.delta}x` : "n/a",
+    ];
+  }) ?? [];
+
+  container.innerHTML = tableHtml(["Date", "Best public signal", "Best synthetic signal"], rows);
+}
+
+function tableHtml(headers, rows) {
+  if (rows.length === 0) {
+    return '<span class="muted">No benchmark data available yet.</span>';
+  }
+
+  return `<table>
+    <thead><tr>${headers.map((header) => `<th>${escapeHtml(header)}</th>`).join("")}</tr></thead>
+    <tbody>${rows.map((row) => `<tr>${row.map((cell) => `<td>${escapeHtml(cell)}</td>`).join("")}</tr>`).join("")}</tbody>
+  </table>`;
+}
+
+function escapeHtml(value) {
+  return String(value)
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;");
+}
+
+function formatPeakRss(samples) {
+  const values = samples?.map((sample) => sample.peakRssKb).filter((value) => typeof value === "number") ?? [];
+  return values.length > 0 ? `${Math.max(...values)} KB` : "not captured";
+}

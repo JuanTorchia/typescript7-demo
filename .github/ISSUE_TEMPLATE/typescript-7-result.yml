@@ -1,0 +1,51 @@
+name: TypeScript 7 result report
+description: Share benchmark or migration results from this repo
+title: "TypeScript 7 result: <project or environment>"
+labels:
+  - typescript-7
+  - benchmark
+body:
+  - type: input
+    id: os
+    attributes:
+      label: OS and runner
+      description: Example: Ubuntu 24.04 GitHub Actions, Windows 11 local, macOS arm64
+    validations:
+      required: true
+  - type: input
+    id: node
+    attributes:
+      label: Node version
+      description: Output from node --version
+    validations:
+      required: true
+  - type: input
+    id: package-manager
+    attributes:
+      label: Package manager
+      description: npm, pnpm, yarn, bun, or other
+    validations:
+      required: true
+  - type: textarea
+    id: commands
+    attributes:
+      label: Commands run
+      description: Paste the exact commands used.
+      render: shell
+    validations:
+      required: true
+  - type: textarea
+    id: results
+    attributes:
+      label: Result summary
+      description: Include TS6 time, TS7 time, tuning flags, and migration findings if available.
+    validations:
+      required: true
+  - type: textarea
+    id: diagnostics
+    attributes:
+      label: Diagnostics or failures
+      description: Paste relevant compiler output. Avoid private source snippets.
+      render: text
+    validations:
+      required: false

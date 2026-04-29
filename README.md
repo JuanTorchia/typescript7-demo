@@ -1,5 +1,8 @@
 # TypeScript 7 PreviewBench
 
+[![TypeScript 7 Fast Check](https://github.com/JuanTorchia/typescript7-demo/actions/workflows/typescript-7-open-source.yml/badge.svg)](https://github.com/JuanTorchia/typescript7-demo/actions/workflows/typescript-7-open-source.yml)
+[![TypeScript 7 Full Benchmark](https://github.com/JuanTorchia/typescript7-demo/actions/workflows/typescript-7-full-benchmark.yml/badge.svg)](https://github.com/JuanTorchia/typescript7-demo/actions/workflows/typescript-7-full-benchmark.yml)
+
 PreviewBench is a practical TypeScript 7 migration lab with commands that can be run locally or in GitHub Actions.
 
 Important correction: the public TypeScript 7.0 beta is not installed as `typescript@beta`. Microsoft published it as `@typescript/native-preview@beta`, and the native compiler is executed with `tsgo`.
@@ -28,6 +31,9 @@ Use this repo as an upgrade readiness check before TypeScript 7 becomes an upgra
 - Customize that workflow for `npm`, `pnpm`, `yarn`, or `bun`.
 - Use real commands such as `npm run typecheck`, `tsc -b`, `turbo typecheck`, `vue-tsc`, or `next build`.
 - Review concrete migration findings such as `moduleResolution=node10`, `baseUrl`, and `isolatedDeclarations`.
+- Scan your own `tsconfig*.json` files before running expensive benchmarks.
+- Compare TypeScript 7 preview tuning flags such as `--checkers`, `--builders`, and `--singleThreaded`.
+- Generate a Markdown report that can be pasted into issues, RFCs, or upgrade notes.
 - Track preview behavior over time while TypeScript 7 is still beta.
 - Build evidence for whether faster type-checking matters in your codebase.
 
@@ -38,20 +44,26 @@ Use this repo as an upgrade readiness check before TypeScript 7 becomes an upgra
 - The same local TypeScript project type-checks with both compilers.
 - `isolatedDeclarations` catches public exports that need explicit annotations.
 - An open-source type-heavy fixture based on `type-fest@5.6.0` type-checks with both compilers.
-- A public-repository benchmark clones `sindresorhus/type-fest@v5.6.0`, `gvergnaud/ts-pattern@v5.9.0`, and `supermacro/neverthrow@v8.2.0`, verifies expected commits, and compares both compilers against real repos.
+- A public-repository benchmark clones `sindresorhus/type-fest@v5.6.0`, `gvergnaud/ts-pattern@v5.9.0`, `ts-essentials/ts-essentials@v9.4.2`, `supermacro/neverthrow@v8.2.0`, and `millsp/ts-toolbelt@v9.5.1`, verifies expected commits, and compares both compilers against real repos or migration checks.
 - A controlled synthetic benchmark generates inspectable stress corpora for template-literal types, many modules, and project references.
+- A TypeScript 7 tuning benchmark compares preview flags on the same local project.
+- A migration scanner reports local `tsconfig*.json` findings before teams spend time interpreting benchmark results.
+- A site data exporter renders committed JSON results into the static web page.
 - The benchmark script compares `tsc6 --noEmit` and `tsgo --noEmit` on both the local project and the Type-Fest fixture.
 - The static site explains the safer model for private repositories: run the check in the user's own GitHub Actions environment.
 
-## Why Type-Fest?
+## Why These Public Repos?
 
 The repo includes [type-fest](https://github.com/sindresorhus/type-fest) as a pinned dev dependency and compiles `oss/type-fest-usage.ts` against it.
 
-That gives the demo more credibility than only using hand-written toy examples:
+The public benchmark also clones pinned external repositories. That gives the demo more credibility than only using hand-written toy examples:
 
 - Type-Fest is a known open-source package.
 - It uses complex conditional, mapped, recursive, and template-literal types.
-- The version is pinned in `package-lock.json`, so results are reproducible.
+- ts-pattern adds exhaustive pattern matching and deep inference.
+- ts-essentials adds another utility-type package with a production tsconfig.
+- neverthrow and ts-toolbelt provide real migration signals from older config choices.
+- Versions and commits are pinned, so results are reproducible.
 
 ## Install
 
@@ -122,6 +134,51 @@ $env:RUNS=10; npm run bench
 
 Benchmark results depend heavily on machine, OS, package manager cache, project size, and cold versus warm runs. Treat them as local measurements, not universal claims.
 
+## Methodology
+
+Read [docs/benchmark-methodology.md](docs/benchmark-methodology.md) before quoting numbers.
+
+Short version:
+
+- Compare results from the same machine and same run.
+- Prefer medians over averages when multiple samples exist.
+- Public repositories are pinned and verified by commit.
+- Synthetic inputs are generated locally and can be inspected under `.tmp/synthetic-corpus`.
+- TypeScript 7 is a preview, so results are migration signal rather than final compiler behavior.
+- Weekly benchmark artifacts are useful for trend tracking while the preview changes.
+
+## Migration Scanner
+
+```bash
+npm run scan:migration
+```
+
+This scans local `tsconfig*.json` files and writes `migration-findings.json`.
+
+It currently checks for:
+
+- removed or risky module resolution modes
+- `baseUrl`
+- `skipLibCheck`
+- declaration emit without `isolatedDeclarations`
+- project references that should be tested with builder tuning
+
+## TypeScript 7 Tuning Matrix
+
+```bash
+npm run bench:tuning
+```
+
+This compares preview flags on the local project:
+
+- `tsgo --noEmit`
+- `tsgo --noEmit --checkers 1`
+- `tsgo --noEmit --checkers 4`
+- `tsgo --noEmit --singleThreaded`
+- `tsgo -b tsconfig.json --builders 4 --dry`
+
+On Linux runners, this script also records peak RSS with `/usr/bin/time -v`. On Windows, peak RSS is reported as unavailable instead of mixing incompatible measurement methods.
+
 ## Public Repository Benchmark
 
 ```bash
@@ -134,15 +191,21 @@ Current matrix:
 
 - `sindresorhus/type-fest@v5.6.0`: heavy type-level programming.
 - `gvergnaud/ts-pattern@v5.9.0`: exhaustive pattern matching and deep inference.
+- `ts-essentials/ts-essentials@v9.4.2`: utility type library production config.
 - `supermacro/neverthrow@v8.2.0`: migration compatibility signal for deprecated or removed compiler options.
+- `millsp/ts-toolbelt@v9.5.1`: legacy utility-type migration signal for removed compiler options.
 
 It is intentionally separate from `npm run verify` because it performs network IO and takes longer than the local fixture checks.
 
 A local smoke run on Windows with Node 24, `RUNS=1`, and `WARMUPS=0` measured:
 
-- `sindresorhus/type-fest`: TypeScript 6 `73994ms`, TypeScript 7 native preview `45461ms`, roughly `1.63x` faster.
-- `gvergnaud/ts-pattern`: TypeScript 6 `2474ms`, TypeScript 7 native preview `685ms`, roughly `3.61x` faster.
+- `sindresorhus/type-fest`: TypeScript 6 `125026ms`, TypeScript 7 native preview `76685ms`, roughly `1.63x` faster.
+- `gvergnaud/ts-pattern`: TypeScript 6 `5294ms`, TypeScript 7 native preview `2795ms`, roughly `1.89x` faster.
+- `ts-essentials/ts-essentials`: TypeScript 6 `1369ms`, TypeScript 7 native preview `1164ms`, roughly `1.18x` faster.
 - `supermacro/neverthrow`: migration signal. TypeScript 6 reports deprecated options; TypeScript 7 reports those options as removed.
+- `millsp/ts-toolbelt`: migration signal. TypeScript 6 reports deprecated options; TypeScript 7 reports removed options.
+
+The matrix now includes additional public projects. Rerun `npm run bench:public` for current numbers because the project list and preview compiler version can change.
 
 Treat those as sample numbers only. The GitHub Actions artifact is the reproducible benchmark output for the published repo.
 
@@ -170,18 +233,49 @@ These are not public ecosystem proof. They are controlled stress inputs that mak
 
 ## GitHub Actions
 
-This repo includes `.github/workflows/typescript-7-open-source.yml`.
+This repo includes two workflows:
 
-It runs the local project and the Type-Fest fixture against:
+- `.github/workflows/typescript-7-open-source.yml`: fast push/PR verification.
+- `.github/workflows/typescript-7-full-benchmark.yml`: manual and weekly full benchmark.
 
-- TypeScript 6 through `tsc6`
-- TypeScript 7 native preview through `tsgo`
+The fast workflow runs local project checks, the Type-Fest fixture, the migration scanner, and a local benchmark.
 
-It also uploads `benchmark-results.json` as a workflow artifact.
+The full workflow runs:
 
-The workflow also runs the public repository benchmark and uploads `benchmark-public-repos.json`.
+- local benchmark
+- TypeScript 7 tuning matrix
+- controlled synthetic benchmark
+- public repository benchmark
+- migration scanner
+- Markdown report generator
+- static site data exporter
 
-It also runs the controlled synthetic benchmark and uploads `benchmark-synthetic.json`.
+The full workflow uploads raw JSON plus `benchmark-report.md` as artifacts.
+
+The full workflow is also scheduled weekly. It does not commit back to the repository; publish a new static history snapshot manually when you want the site to show a new run.
+
+## Markdown Report
+
+```bash
+npm run bench:full
+npm run report
+```
+
+The report generator writes `benchmark-report.md` from the JSON outputs.
+
+## Static Site Data
+
+```bash
+npm run site:data
+```
+
+This writes `site/data/latest-results.json`, which the static site reads to render the latest committed result tables.
+
+To append the current site data to the published history:
+
+```bash
+npm run history:update
+```
 
 ## Relevant Files
 
@@ -192,6 +286,11 @@ It also runs the controlled synthetic benchmark and uploads `benchmark-synthetic
 - `oss/type-fest-usage.ts`: open-source type-heavy fixture using Type-Fest.
 - `scripts/generate-synthetic-corpus.mjs`: generated benchmark corpus for controlled stress tests.
 - `scripts/benchmark-synthetic.mjs`: TypeScript 6 versus TypeScript 7 benchmark runner for the generated corpus.
+- `scripts/benchmark-tuning.mjs`: TypeScript 7 preview tuning matrix.
+- `scripts/scan-migration.mjs`: local `tsconfig*.json` migration scanner.
+- `scripts/generate-report.mjs`: Markdown report generator.
+- `scripts/write-site-data.mjs`: static site data snapshot generator.
+- `docs/benchmark-methodology.md`: benchmark methodology and caveats.
 - `fixtures/isolated-declarations/bad-export.ts`: intentionally failing fixture for `isolatedDeclarations`.
 - `test/tooling.test.mjs`: Node test suite that validates the real toolchain.
 

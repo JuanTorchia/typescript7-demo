@@ -1,0 +1,525 @@
+{
+  "generatedAt": "2026-04-29T03:16:40.641Z",
+  "source": "Repository benchmark and migration JSON files created from npm script outputs.",
+  "local": [
+    {
+      "label": "Local project: TypeScript 6 tsc6 --noEmit",
+      "runs": 5,
+      "samplesMs": [
+        2315,
+        3700,
+        2005,
+        4200,
+        4556
+      ],
+      "averageMs": 3355
+    },
+    {
+      "label": "Local project: TypeScript 7 tsgo --noEmit",
+      "runs": 5,
+      "samplesMs": [
+        2911,
+        2139,
+        1513,
+        1145,
+        1047
+      ],
+      "averageMs": 1751
+    },
+    {
+      "label": "Type-Fest fixture: TypeScript 6 tsc6 --noEmit",
+      "runs": 5,
+      "samplesMs": [
+        11508,
+        7579,
+        6161,
+        5210,
+        4676
+      ],
+      "averageMs": 7027
+    },
+    {
+      "label": "Type-Fest fixture: TypeScript 7 tsgo --noEmit",
+      "runs": 5,
+      "samplesMs": [
+        1603,
+        1867,
+        1890,
+        1580,
+        1654
+      ],
+      "averageMs": 1719
+    }
+  ],
+  "synthetic": {
+    "generatedAt": "2026-04-29T01:51:48.423Z",
+    "note": "Synthetic stress tests are generated in .tmp/synthetic-corpus and are intended to be inspectable, controlled benchmark inputs.",
+    "runs": 1,
+    "warmups": 0,
+    "benchmarks": [
+      {
+        "id": "template-literal-stress",
+        "category": "template literal and mapped types",
+        "ts6": {
+          "label": "template-literal-stress: TypeScript 6",
+          "command": "C:\\nvm4w\\nodejs\\node.exe C:\\Users\\jstor\\develop\\typescript7-demo\\node_modules\\@typescript\\typescript6\\bin\\tsc6 -p tsconfig.json --noEmit",
+          "runs": 1,
+          "warmups": 0,
+          "status": "passed",
+          "averageMs": 44009,
+          "medianMs": 44009,
+          "minMs": 44009,
+          "samples": [
+            {
+              "status": 0,
+              "durationMs": 44009
+            }
+          ]
+        },
+        "ts7": {
+          "label": "template-literal-stress: TypeScript 7 native preview",
+          "command": "C:\\nvm4w\\nodejs\\node.exe C:\\Users\\jstor\\develop\\typescript7-demo\\node_modules\\@typescript\\native-preview\\bin\\tsgo.js -p tsconfig.json --noEmit",
+          "runs": 1,
+          "warmups": 0,
+          "status": "passed",
+          "averageMs": 17097,
+          "medianMs": 17097,
+          "minMs": 17097,
+          "samples": [
+            {
+              "status": 0,
+              "durationMs": 17097
+            }
+          ]
+        },
+        "observedDelta": 2.57
+      },
+      {
+        "id": "many-modules",
+        "category": "many small modules and import graph",
+        "ts6": {
+          "label": "many-modules: TypeScript 6",
+          "command": "C:\\nvm4w\\nodejs\\node.exe C:\\Users\\jstor\\develop\\typescript7-demo\\node_modules\\@typescript\\typescript6\\bin\\tsc6 -p tsconfig.json --noEmit",
+          "runs": 1,
+          "warmups": 0,
+          "status": "passed",
+          "averageMs": 3468,
+          "medianMs": 3468,
+          "minMs": 3468,
+          "samples": [
+            {
+              "status": 0,
+              "durationMs": 3468
+            }
+          ]
+        },
+        "ts7": {
+          "label": "many-modules: TypeScript 7 native preview",
+          "command": "C:\\nvm4w\\nodejs\\node.exe C:\\Users\\jstor\\develop\\typescript7-demo\\node_modules\\@typescript\\native-preview\\bin\\tsgo.js -p tsconfig.json --noEmit",
+          "runs": 1,
+          "warmups": 0,
+          "status": "passed",
+          "averageMs": 858,
+          "medianMs": 858,
+          "minMs": 858,
+          "samples": [
+            {
+              "status": 0,
+              "durationMs": 858
+            }
+          ]
+        },
+        "observedDelta": 4.04
+      },
+      {
+        "id": "project-references",
+        "category": "project references build graph",
+        "ts6": {
+          "label": "project-references: TypeScript 6",
+          "command": "C:\\nvm4w\\nodejs\\node.exe C:\\Users\\jstor\\develop\\typescript7-demo\\node_modules\\@typescript\\typescript6\\bin\\tsc6 -b tsconfig.json --force",
+          "runs": 1,
+          "warmups": 0,
+          "status": "passed",
+          "averageMs": 1487,
+          "medianMs": 1487,
+          "minMs": 1487,
+          "samples": [
+            {
+              "status": 0,
+              "durationMs": 1487
+            }
+          ]
+        },
+        "ts7": {
+          "label": "project-references: TypeScript 7 native preview",
+          "command": "C:\\nvm4w\\nodejs\\node.exe C:\\Users\\jstor\\develop\\typescript7-demo\\node_modules\\@typescript\\native-preview\\bin\\tsgo.js -b tsconfig.json --force",
+          "runs": 1,
+          "warmups": 0,
+          "status": "passed",
+          "averageMs": 622,
+          "medianMs": 622,
+          "minMs": 622,
+          "samples": [
+            {
+              "status": 0,
+              "durationMs": 622
+            }
+          ]
+        },
+        "observedDelta": 2.39
+      }
+    ]
+  },
+  "publicRepos": {
+    "generatedAt": "2026-04-29T02:54:17.865Z",
+    "note": "TypeScript 7 is a preview. Treat these as CI measurements and migration signals, not final compiler guarantees.",
+    "runs": 1,
+    "warmups": 0,
+    "benchmarks": [
+      {
+        "repo": "sindresorhus/type-fest",
+        "ref": "v5.6.0",
+        "commit": "a5491644b32160f804dd10d0b44dad461037f4c1",
+        "category": "heavy type-level programming",
+        "why": "Conditional, mapped, recursive, and template-literal types.",
+        "resultKind": "benchmark",
+        "ts6": {
+          "label": "sindresorhus/type-fest: TypeScript 6",
+          "command": "node --max-old-space-size=6144 node_modules/@typescript/typescript6/bin/tsc6 -p tsconfig.json --noEmit",
+          "runs": 1,
+          "warmups": 0,
+          "status": "passed",
+          "averageMs": 125026,
+          "medianMs": 125026,
+          "minMs": 125026,
+          "samples": [
+            {
+              "status": 0,
+              "durationMs": 125026,
+              "diagnosticExcerpt": ""
+            }
+          ]
+        },
+        "ts7": {
+          "label": "sindresorhus/type-fest: TypeScript 7 native preview",
+          "command": "node node_modules/@typescript/native-preview/bin/tsgo.js -p tsconfig.json --noEmit",
+          "runs": 1,
+          "warmups": 0,
+          "status": "passed",
+          "averageMs": 76685,
+          "medianMs": 76685,
+          "minMs": 76685,
+          "samples": [
+            {
+              "status": 0,
+              "durationMs": 76685,
+              "diagnosticExcerpt": ""
+            }
+          ]
+        },
+        "observedDelta": 1.63
+      },
+      {
+        "repo": "gvergnaud/ts-pattern",
+        "ref": "v5.9.0",
+        "commit": "0e15315eafbbb813a91bad34496418846981c1b1",
+        "category": "exhaustive pattern matching",
+        "why": "Deep inference, union narrowing, and exhaustive match types.",
+        "resultKind": "benchmark",
+        "ts6": {
+          "label": "gvergnaud/ts-pattern: TypeScript 6",
+          "command": "node node_modules/@typescript/typescript6/bin/tsc6 --strict --noEmit",
+          "runs": 1,
+          "warmups": 0,
+          "status": "passed",
+          "averageMs": 5294,
+          "medianMs": 5294,
+          "minMs": 5294,
+          "samples": [
+            {
+              "status": 0,
+              "durationMs": 5294,
+              "diagnosticExcerpt": ""
+            }
+          ]
+        },
+        "ts7": {
+          "label": "gvergnaud/ts-pattern: TypeScript 7 native preview",
+          "command": "node node_modules/@typescript/native-preview/bin/tsgo.js --strict --noEmit",
+          "runs": 1,
+          "warmups": 0,
+          "status": "passed",
+          "averageMs": 2795,
+          "medianMs": 2795,
+          "minMs": 2795,
+          "samples": [
+            {
+              "status": 0,
+              "durationMs": 2795,
+              "diagnosticExcerpt": ""
+            }
+          ]
+        },
+        "observedDelta": 1.89
+      },
+      {
+        "repo": "ts-essentials/ts-essentials",
+        "ref": "v9.4.2",
+        "commit": "8e625d9f554fe2607e5cf53706bdf23301643247",
+        "category": "utility type library",
+        "why": "A focused utility-types package with production and test configurations.",
+        "resultKind": "benchmark",
+        "ts6": {
+          "label": "ts-essentials/ts-essentials: TypeScript 6",
+          "command": "node node_modules/@typescript/typescript6/bin/tsc6 -p tsconfig.prod.json --noEmit",
+          "runs": 1,
+          "warmups": 0,
+          "status": "passed",
+          "averageMs": 1369,
+          "medianMs": 1369,
+          "minMs": 1369,
+          "samples": [
+            {
+              "status": 0,
+              "durationMs": 1369,
+              "diagnosticExcerpt": ""
+            }
+          ]
+        },
+        "ts7": {
+          "label": "ts-essentials/ts-essentials: TypeScript 7 native preview",
+          "command": "node node_modules/@typescript/native-preview/bin/tsgo.js -p tsconfig.prod.json --noEmit",
+          "runs": 1,
+          "warmups": 0,
+          "status": "passed",
+          "averageMs": 1164,
+          "medianMs": 1164,
+          "minMs": 1164,
+          "samples": [
+            {
+              "status": 0,
+              "durationMs": 1164,
+              "diagnosticExcerpt": ""
+            }
+          ]
+        },
+        "observedDelta": 1.18
+      }
+    ],
+    "migrationChecks": [
+      {
+        "repo": "supermacro/neverthrow",
+        "ref": "v8.2.0",
+        "commit": "1d4cc19ed2e6ba882e296385fe0175d642ec8c5d",
+        "category": "migration compatibility signal",
+        "why": "Shows removed/deprecated compiler options that matter during a TypeScript 7 migration.",
+        "resultKind": "migration-signal",
+        "ts6": {
+          "label": "supermacro/neverthrow: TypeScript 6",
+          "command": "node node_modules/@typescript/typescript6/bin/tsc6 --noEmit",
+          "runs": 1,
+          "warmups": 0,
+          "status": "failed",
+          "averageMs": null,
+          "medianMs": null,
+          "minMs": null,
+          "samples": [
+            {
+              "status": 2,
+              "durationMs": 989,
+              "diagnosticExcerpt": "tsconfig.json(5,27): error TS5107: Option 'moduleResolution=node10' is deprecated and will stop functioning in TypeScript 7.0. Specify compilerOption '\"ignoreDeprecations\": \"6.0\"' to silence this error.\r\n  Visit https://aka.ms/ts6 for migration information.\r\ntsconfig.json(14,7): error TS5101: Option 'baseUrl' is deprecated and will stop functioning in TypeScript 7.0. Specify compilerOption '\"ignoreDeprecations\": \"6.0\"' to silence this error.\r\n  Visit https://aka.ms/ts6 for migration information."
+            }
+          ]
+        },
+        "ts7": {
+          "label": "supermacro/neverthrow: TypeScript 7 native preview",
+          "command": "node node_modules/@typescript/native-preview/bin/tsgo.js --noEmit",
+          "runs": 1,
+          "warmups": 0,
+          "status": "failed",
+          "averageMs": null,
+          "medianMs": null,
+          "minMs": null,
+          "samples": [
+            {
+              "status": 2,
+              "durationMs": 732,
+              "diagnosticExcerpt": "tsconfig.json(5,27): error TS5108: Option 'moduleResolution=node10' has been removed. Please remove it from your configuration.\ntsconfig.json(14,7): error TS5102: Option 'baseUrl' has been removed. Please remove it from your configuration.\n  Use '\"paths\": {\"*\": [\"./src/*\"]}' instead."
+            }
+          ]
+        },
+        "observedDelta": null
+      },
+      {
+        "repo": "millsp/ts-toolbelt",
+        "ref": "v9.5.1",
+        "commit": "359e223c1a4a38345c989e3abe72257d41bda989",
+        "category": "legacy type-level migration signal",
+        "why": "Surfaces older tsconfig options that matter for utility-type libraries.",
+        "resultKind": "migration-signal",
+        "ts6": {
+          "label": "millsp/ts-toolbelt: TypeScript 6",
+          "command": "node node_modules/@typescript/typescript6/bin/tsc6 -p tsconfig.json --noEmit",
+          "runs": 1,
+          "warmups": 0,
+          "status": "failed",
+          "averageMs": null,
+          "medianMs": null,
+          "minMs": null,
+          "samples": [
+            {
+              "status": 2,
+              "durationMs": 3482,
+              "diagnosticExcerpt": "tsconfig.json:17:7 - error TS5101: Option 'downlevelIteration' is deprecated and will stop functioning in TypeScript 7.0. Specify compilerOption '\"ignoreDeprecations\": \"6.0\"' to silence this error.\r\n\r\n17       \"downlevelIteration\": true, /* Provide full support for iterables in 'for-of', spread, and destructuring when targeting 'ES5' or 'ES3'. */\r\n         ~~~~~~~~~~~~~~~~~~~~\r\n\r\ntsconfig.json:77:7 - error TS5102: Option 'suppressImplicitAnyIndexErrors' has been removed. Please remove it from your configuration.\r\n\r\n77       \"suppressImplicitAnyIndexErrors\": true, /* Suppress noImplicitAny errors for indexing objects lacking index signatures. */\r"
+            }
+          ]
+        },
+        "ts7": {
+          "label": "millsp/ts-toolbelt: TypeScript 7 native preview",
+          "command": "node node_modules/@typescript/native-preview/bin/tsgo.js -p tsconfig.json --noEmit",
+          "runs": 1,
+          "warmups": 0,
+          "status": "failed",
+          "averageMs": null,
+          "medianMs": null,
+          "minMs": null,
+          "samples": [
+            {
+              "status": 2,
+              "durationMs": 794,
+              "diagnosticExcerpt": "tsconfig.json(17,7): error TS5102: Option 'downlevelIteration' has been removed. Please remove it from your configuration.\ntsconfig.json(77,7): error TS5023: Unknown compiler option 'suppressImplicitAnyIndexErrors'.\ntsconfig.json(83,7): error TS6266: Option 'watch' can only be specified on command line.\n\nFound 3 errors in the same file, starting at: tsconfig.json:17"
+            }
+          ]
+        },
+        "observedDelta": null
+      }
+    ]
+  },
+  "tuning": {
+    "generatedAt": "2026-04-29T03:11:47.037Z",
+    "note": "TypeScript 7 tuning flags are preview behavior. Compare relative behavior on the same machine, not across machines.",
+    "runs": 1,
+    "warmups": 0,
+    "variants": [
+      {
+        "id": "default-check",
+        "label": "tsgo --noEmit",
+        "category": "local project",
+        "command": "C:\\nvm4w\\nodejs\\node.exe node_modules/@typescript/native-preview/bin/tsgo.js --noEmit",
+        "status": "passed",
+        "runs": 1,
+        "warmups": 0,
+        "averageMs": 2076,
+        "medianMs": 2076,
+        "minMs": 2076,
+        "samples": [
+          {
+            "status": 0,
+            "durationMs": 2076,
+            "peakRssKb": null
+          }
+        ]
+      },
+      {
+        "id": "checkers-1",
+        "label": "tsgo --noEmit --checkers 1",
+        "category": "checker tuning",
+        "command": "C:\\nvm4w\\nodejs\\node.exe node_modules/@typescript/native-preview/bin/tsgo.js --noEmit --checkers 1",
+        "status": "passed",
+        "runs": 1,
+        "warmups": 0,
+        "averageMs": 1132,
+        "medianMs": 1132,
+        "minMs": 1132,
+        "samples": [
+          {
+            "status": 0,
+            "durationMs": 1132,
+            "peakRssKb": null
+          }
+        ]
+      },
+      {
+        "id": "checkers-4",
+        "label": "tsgo --noEmit --checkers 4",
+        "category": "checker tuning",
+        "command": "C:\\nvm4w\\nodejs\\node.exe node_modules/@typescript/native-preview/bin/tsgo.js --noEmit --checkers 4",
+        "status": "passed",
+        "runs": 1,
+        "warmups": 0,
+        "averageMs": 1089,
+        "medianMs": 1089,
+        "minMs": 1089,
+        "samples": [
+          {
+            "status": 0,
+            "durationMs": 1089,
+            "peakRssKb": null
+          }
+        ]
+      },
+      {
+        "id": "single-threaded",
+        "label": "tsgo --noEmit --singleThreaded",
+        "category": "debug baseline",
+        "command": "C:\\nvm4w\\nodejs\\node.exe node_modules/@typescript/native-preview/bin/tsgo.js --noEmit --singleThreaded",
+        "status": "passed",
+        "runs": 1,
+        "warmups": 0,
+        "averageMs": 1612,
+        "medianMs": 1612,
+        "minMs": 1612,
+        "samples": [
+          {
+            "status": 0,
+            "durationMs": 1612,
+            "peakRssKb": null
+          }
+        ]
+      },
+      {
+        "id": "builders-4-dry",
+        "label": "tsgo -b tsconfig.json --builders 4 --dry",
+        "category": "project builder tuning",
+        "command": "C:\\nvm4w\\nodejs\\node.exe node_modules/@typescript/native-preview/bin/tsgo.js -b tsconfig.json --builders 4 --dry",
+        "status": "passed",
+        "runs": 1,
+        "warmups": 0,
+        "averageMs": 291,
+        "medianMs": 291,
+        "minMs": 291,
+        "samples": [
+          {
+            "status": 0,
+            "durationMs": 291,
+            "peakRssKb": null
+          }
+        ]
+      }
+    ]
+  },
+  "migration": {
+    "generatedAt": "2026-04-29T03:14:09.014Z",
+    "root": "C:\\Users\\jstor\\develop\\typescript7-demo",
+    "scannedFiles": [
+      "fixtures\\isolated-declarations\\tsconfig.json",
+      "tsconfig.isolated.json",
+      "tsconfig.json",
+      "tsconfig.oss.json"
+    ],
+    "summary": {
+      "error": 0,
+      "warn": 0,
+      "info": 1
+    },
+    "findings": [
+      {
+        "file": "tsconfig.json",
+        "severity": "info",
+        "code": "isolatedDeclarations-readiness",
+        "finding": "Declarations are emitted, but isolatedDeclarations is not enabled.",
+        "action": "Run an isolatedDeclarations branch check to find exported APIs that need explicit annotations."
+      }
+    ]
+  }
+}

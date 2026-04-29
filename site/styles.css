@@ -147,6 +147,12 @@ h3 {
 .how p,
 .section-head p,
 .artifact-card p,
+.live-results p,
+.method-grid p,
+.case-grid p,
+.tuning-matrix p,
+.scanner-card p,
+.reporting p,
 .example p,
 .security li {
   color: var(--muted);
@@ -169,6 +175,11 @@ code {
 .examples,
 .migration-findings,
 .claim-matrix,
+.methodology,
+.tuning-matrix,
+.trend-section,
+.use-cases,
+.reporting,
 .usefulness,
 .ts7-pitch,
 .product-flow,
@@ -227,6 +238,51 @@ code {
   background: #e7f2d2;
   padding: 22px;
   box-shadow: 8px 8px 0 var(--line);
+}
+
+.live-results,
+.scanner-card {
+  display: grid;
+  grid-template-columns: 0.85fr 1.15fr;
+  gap: 22px;
+  align-items: start;
+  margin-top: 22px;
+  border: 2px solid var(--line);
+  background: var(--panel);
+  padding: 22px;
+  box-shadow: 8px 8px 0 var(--line);
+}
+
+.live-table {
+  overflow: auto;
+  border: 2px solid var(--line);
+  background: #fffaf0;
+}
+
+.live-table table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 620px;
+}
+
+.live-table th,
+.live-table td {
+  padding: 12px;
+  border-bottom: 1px solid rgba(42, 37, 28, 0.35);
+  text-align: left;
+  vertical-align: top;
+}
+
+.live-table th {
+  background: var(--green);
+  color: white;
+  font-weight: 850;
+}
+
+.muted {
+  display: block;
+  padding: 16px;
+  color: var(--muted);
 }
 
 .artifact-actions {
@@ -344,6 +400,8 @@ code {
 .claim-grid,
 .value-grid,
 .pitch-grid,
+.method-grid,
+.case-grid,
 .flow-grid {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
@@ -361,6 +419,8 @@ code {
 .claim-grid article,
 .value-grid article,
 .pitch-grid article,
+.method-grid article,
+.case-grid article,
 .flow-grid article {
   border: 2px solid var(--line);
   background: #e7f2d2;
@@ -370,6 +430,7 @@ code {
 
 .value-grid article,
 .pitch-grid article,
+.case-grid article,
 .flow-grid article {
   background: var(--panel);
 }
@@ -392,6 +453,7 @@ code {
 }
 
 .pitch-grid strong,
+.method-grid strong,
 .value-grid strong {
   display: block;
   margin-bottom: 10px;
@@ -401,6 +463,8 @@ code {
 .claim-grid p,
 .value-grid p,
 .pitch-grid p,
+.method-grid p,
+.case-grid p,
 .flow-grid p,
 .product-card p,
 .product-card li {
@@ -609,8 +673,12 @@ pre code {
   .claim-grid,
   .value-grid,
   .pitch-grid,
+  .method-grid,
+  .case-grid,
   .flow-grid,
   .product-card,
+  .live-results,
+  .scanner-card,
   .security,
   .columns {
     grid-template-columns: 1fr;

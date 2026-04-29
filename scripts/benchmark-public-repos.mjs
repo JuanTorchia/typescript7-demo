@@ -31,6 +31,17 @@ const projects = [
     ts7: ["node", "node_modules/@typescript/native-preview/bin/tsgo.js", "--strict", "--noEmit"],
   },
   {
+    id: "ts-essentials",
+    repo: "ts-essentials/ts-essentials",
+    url: "https://github.com/ts-essentials/ts-essentials.git",
+    ref: "v9.4.2",
+    expectedCommit: "8e625d9f554fe2607e5cf53706bdf23301643247",
+    category: "utility type library",
+    why: "A focused utility-types package with production and test configurations.",
+    ts6: ["node", "node_modules/@typescript/typescript6/bin/tsc6", "-p", "tsconfig.prod.json", "--noEmit"],
+    ts7: ["node", "node_modules/@typescript/native-preview/bin/tsgo.js", "-p", "tsconfig.prod.json", "--noEmit"],
+  },
+  {
     id: "neverthrow",
     repo: "supermacro/neverthrow",
     url: "https://github.com/supermacro/neverthrow.git",
@@ -39,8 +50,22 @@ const projects = [
     category: "migration compatibility signal",
     why: "Shows removed/deprecated compiler options that matter during a TypeScript 7 migration.",
     mode: "migration",
+    skipProjectInstall: true,
     ts6: ["node", "node_modules/@typescript/typescript6/bin/tsc6", "--noEmit"],
     ts7: ["node", "node_modules/@typescript/native-preview/bin/tsgo.js", "--noEmit"],
+  },
+  {
+    id: "ts-toolbelt",
+    repo: "millsp/ts-toolbelt",
+    url: "https://github.com/millsp/ts-toolbelt.git",
+    ref: "v9.5.1",
+    expectedCommit: "359e223c1a4a38345c989e3abe72257d41bda989",
+    category: "legacy type-level migration signal",
+    why: "Surfaces older tsconfig options that matter for utility-type libraries.",
+    mode: "migration",
+    skipProjectInstall: true,
+    ts6: ["node", "node_modules/@typescript/typescript6/bin/tsc6", "-p", "tsconfig.json", "--noEmit"],
+    ts7: ["node", "node_modules/@typescript/native-preview/bin/tsgo.js", "-p", "tsconfig.json", "--noEmit"],
   },
 ];
 
@@ -53,6 +78,8 @@ function exec(command, args, options = {}) {
       env: {
         ...process.env,
         CI: "1",
+        NO_COLOR: "1",
+        FORCE_COLOR: "0",
       },
     });
   } catch (error) {
@@ -69,6 +96,8 @@ function run(command, args, cwd) {
     env: {
       ...process.env,
       CI: "1",
+      NO_COLOR: "1",
+      FORCE_COLOR: "0",
     },
   });
 
@@ -118,8 +147,13 @@ function prepareProject(project) {
   }
 
   console.log(`✓ verified ${project.repo} commit ${commit}`);
-  console.log(`→ installing ${project.repo} dependencies`);
-  execNpm(["install", "--ignore-scripts", "--no-audit", "--no-fund", "--loglevel", "error"], { cwd: directory });
+  if (!project.skipProjectInstall) {
+    console.log(`→ installing ${project.repo} dependencies`);
+    execNpm(["install", "--ignore-scripts", "--no-audit", "--no-fund", "--loglevel", "error", "--legacy-peer-deps"], { cwd: directory });
+  } else {
+    console.log(`→ skipping ${project.repo} dependencies; this is a config-only migration check`);
+  }
+
   console.log(`→ installing TypeScript 6 and TypeScript 7 preview`);
   execNpm([
     "install",
@@ -128,6 +162,7 @@ function prepareProject(project) {
     "--no-fund",
     "--loglevel",
     "error",
+    "--legacy-peer-deps",
     "--no-save",
     "typescript@6.0.3",
     "@typescript/typescript6@6.0.1",
@@ -182,7 +217,7 @@ function measure(label, argv, directory, allowFailure) {
       durationMs: sample.durationMs,
       diagnosticExcerpt: sample.status === 0
         ? ""
-        : `${sample.stdout}\n${sample.stderr}`.trim().split("\n").slice(0, 8).join("\n"),
+        : stripAnsi(`${sample.stdout}\n${sample.stderr}`).trim().split("\n").slice(0, 8).join("\n"),
     })),
   };
 }
@@ -255,4 +290,8 @@ function median(values) {
   }
 
   return Math.round((values[middle - 1] + values[middle]) / 2);
+}
+
+function stripAnsi(value) {
+  return value.replace(/\x1b\[[0-9;]*m/g, "");
 }

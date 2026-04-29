@@ -14,8 +14,15 @@
     "bench": "node scripts/benchmark.mjs",
     "bench:synthetic": "node scripts/benchmark-synthetic.mjs",
     "bench:public": "node scripts/benchmark-public-repos.mjs",
-    "bench:all": "npm run bench && npm run bench:synthetic && npm run bench:public",
-    "verify": "npm run typecheck:ts6 && npm run typecheck:ts7 && npm run typecheck:isolated && npm run typecheck:oss:ts6 && npm run typecheck:oss:ts7 && npm test"
+    "bench:all": "npm run bench && npm run bench:tuning && npm run bench:synthetic && npm run bench:public",
+    "verify": "npm run typecheck:ts6 && npm run typecheck:ts7 && npm run typecheck:isolated && npm run typecheck:oss:ts6 && npm run typecheck:oss:ts7 && npm test",
+    "scan:migration": "node scripts/scan-migration.mjs",
+    "bench:tuning": "node scripts/benchmark-tuning.mjs",
+    "report": "node scripts/generate-report.mjs",
+    "site:data": "node scripts/write-site-data.mjs",
+    "bench:full": "npm run bench && npm run bench:tuning && npm run bench:synthetic && npm run bench:public && npm run scan:migration && npm run report && npm run site:data && npm run history:update",
+    "verify:fast": "npm run typecheck:ts6 && npm run typecheck:ts7 && npm run typecheck:oss:ts6 && npm run typecheck:oss:ts7 && npm test",
+    "history:update": "node scripts/update-history.mjs"
   },
   "keywords": [
     "typescript",
