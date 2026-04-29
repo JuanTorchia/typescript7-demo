@@ -144,37 +144,29 @@ updateWorkflow();
 const terminalOutput = document.getElementById("terminal-output");
 const replayButton = document.querySelector("[data-terminal-replay]");
 const terminalLines = [
-  "$ npm run bench:public",
-  "",
-  "> node scripts/benchmark-public-repos.mjs",
-  "Cloning sindresorhus/type-fest@v5.6.0...",
-  "Verified commit a5491644b32160f804dd10d0b44dad461037f4c1",
-  "Installing repository dependencies...",
-  "Installing @typescript/typescript6@6.0.0 and @typescript/native-preview@beta...",
-  "",
-  "Benchmark target: sindresorhus/type-fest",
-  "TypeScript 6 command:",
-  "node --max-old-space-size=6144 node_modules/@typescript/typescript6/bin/tsc6 -p tsconfig.json --noEmit",
-  "Result: passed in 62039ms",
-  "",
-  "TypeScript 7 native preview command:",
-  "node node_modules/@typescript/native-preview/bin/tsgo.js -p tsconfig.json --noEmit",
-  "Result: passed in 40537ms",
-  "",
-  "Observed delta: ~1.56x faster in this sample run",
-  "",
-  "Cloning gvergnaud/ts-pattern@v5.9.0...",
-  "Result: TypeScript 6 passed in 1669ms",
-  "Result: TypeScript 7 native preview passed in 652ms",
-  "Observed delta: ~2.56x faster in this sample run",
-  "",
-  "Cloning supermacro/neverthrow@v8.2.0...",
-  "TypeScript 6 migration signal: moduleResolution=node10 and baseUrl are deprecated",
-  "TypeScript 7 migration signal: moduleResolution=node10 and baseUrl have been removed",
-  "Wrote benchmark-public-repos.json",
+  { type: "prompt", command: "npm run bench:public" },
+  { type: "muted", text: "> node scripts/benchmark-public-repos.mjs" },
+  { type: "info", text: "cloning sindresorhus/type-fest@v5.6.0" },
+  { type: "ok", text: "verified commit a5491644b32160f804dd10d0b44dad461037f4c1" },
+  { type: "muted", text: "installing dependencies and TypeScript preview packages" },
+  { type: "section", text: "benchmark target: sindresorhus/type-fest" },
+  { type: "cmd", text: "node --max-old-space-size=6144 .../tsc6 -p tsconfig.json --noEmit" },
+  { type: "ok", text: "TypeScript 6 passed in 62039ms" },
+  { type: "cmd", text: "node .../@typescript/native-preview/bin/tsgo.js -p tsconfig.json --noEmit" },
+  { type: "ok", text: "TypeScript 7 preview passed in 40537ms" },
+  { type: "metric", text: "observed delta: ~1.56x faster" },
+  { type: "info", text: "cloning gvergnaud/ts-pattern@v5.9.0" },
+  { type: "ok", text: "TypeScript 6 passed in 1669ms" },
+  { type: "ok", text: "TypeScript 7 preview passed in 652ms" },
+  { type: "metric", text: "observed delta: ~2.56x faster" },
+  { type: "info", text: "cloning supermacro/neverthrow@v8.2.0" },
+  { type: "warn", text: "TypeScript 6: moduleResolution=node10 and baseUrl are deprecated" },
+  { type: "fail", text: "TypeScript 7: moduleResolution=node10 and baseUrl have been removed" },
+  { type: "ok", text: "wrote benchmark-public-repos.json" },
 ];
 
 let replayTimer;
+let terminal;
 
 function replayTerminal() {
   if (!terminalOutput) {
@@ -182,17 +174,110 @@ function replayTerminal() {
   }
 
   window.clearInterval(replayTimer);
-  terminalOutput.textContent = "";
+  ensureTerminal();
+
+  if (terminal) {
+    terminal.reset();
+  } else {
+    terminalOutput.textContent = "";
+  }
 
   let lineIndex = 0;
+  writeTerminalLine(terminalLines[lineIndex]);
+  lineIndex += 1;
+
   replayTimer = window.setInterval(() => {
-    terminalOutput.textContent += `${terminalLines[lineIndex]}\n`;
+    writeTerminalLine(terminalLines[lineIndex]);
     lineIndex += 1;
 
     if (lineIndex >= terminalLines.length) {
       window.clearInterval(replayTimer);
     }
   }, 170);
+}
+
+function ensureTerminal() {
+  if (terminal || !window.Terminal || !terminalOutput) {
+    return;
+  }
+
+  terminal = new window.Terminal({
+    cols: 96,
+    rows: 22,
+    cursorBlink: true,
+    fontFamily: '"Cascadia Code", "JetBrains Mono", Consolas, monospace',
+    fontSize: window.matchMedia("(max-width: 820px)").matches ? 10 : 13,
+    lineHeight: 1.18,
+    theme: {
+      background: "#050505",
+      foreground: "#f7f7f7",
+      cursor: "#7ee787",
+      black: "#050505",
+      red: "#ff5f57",
+      green: "#7ee787",
+      yellow: "#f7cc4b",
+      blue: "#61afef",
+      magenta: "#c678dd",
+      cyan: "#56b6c2",
+      white: "#f7f7f7",
+      brightBlack: "#6b7280",
+      brightRed: "#ff6b6b",
+      brightGreen: "#9be9a8",
+      brightYellow: "#ffd866",
+      brightBlue: "#79c0ff",
+      brightMagenta: "#d2a8ff",
+      brightCyan: "#8be9fd",
+      brightWhite: "#ffffff",
+    },
+  });
+  terminal.open(terminalOutput);
+}
+
+function writeTerminalLine(line) {
+  if (!terminal) {
+    terminalOutput.textContent += `${plainTerminalLine(line)}\n`;
+    return;
+  }
+
+  if (line.type === "prompt") {
+    terminal.writeln(
+      "\x1b[48;5;31m\x1b[38;5;15m juanchi \x1b[0m" +
+        "\x1b[48;5;237m\x1b[38;5;15m \ue0b1 typescript7-demo \x1b[0m" +
+        "\x1b[48;5;64m\x1b[38;5;15m \ue0a0 main \x1b[0m " +
+        `\x1b[1;37m${line.command}\x1b[0m`,
+    );
+    return;
+  }
+
+  const color = {
+    muted: "\x1b[90m",
+    info: "\x1b[36m",
+    ok: "\x1b[32m",
+    section: "\x1b[1;35m",
+    cmd: "\x1b[37m",
+    metric: "\x1b[1;33m",
+    warn: "\x1b[33m",
+    fail: "\x1b[31m",
+  }[line.type] ?? "\x1b[37m";
+
+  const prefix = {
+    info: "",
+    ok: "✓",
+    section: "◆",
+    metric: "↳",
+    warn: "⚠",
+    fail: "✗",
+  }[line.type] ?? " ";
+
+  terminal.writeln(`${color}${prefix} ${line.text}\x1b[0m`);
+}
+
+function plainTerminalLine(line) {
+  if (line.type === "prompt") {
+    return `juanchi typescript7-demo main > ${line.command}`;
+  }
+
+  return line.text;
 }
 
 replayButton?.addEventListener("click", replayTerminal);

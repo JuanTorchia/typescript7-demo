@@ -285,8 +285,9 @@ code {
 .terminal-demo {
   margin-top: 22px;
   border: 2px solid var(--line);
-  background: var(--panel);
+  background: #050505;
   box-shadow: 8px 8px 0 var(--line);
+  overflow: hidden;
 }
 
 .terminal-head {
@@ -295,6 +296,7 @@ code {
   align-items: center;
   justify-content: space-between;
   border-bottom: 2px solid var(--line);
+  background: var(--panel);
   padding: 18px;
 }
 
@@ -307,21 +309,22 @@ code {
   max-height: 520px;
   margin: 0;
   border: 0;
+  background: #050505;
+  color: #f7f7f7;
   box-shadow: none;
+  padding: 14px;
+  white-space: pre-wrap;
+  overflow: hidden;
 }
 
-.terminal code {
-  display: inline;
-}
-
-.cursor {
-  color: #91e6b8;
-  animation: blink 1s steps(1, end) infinite;
+.terminal .xterm {
+  padding: 0;
 }
 
 .terminal-note {
   margin: 0;
   border-top: 2px solid var(--line);
+  background: var(--panel);
   padding: 14px 18px;
   color: var(--muted);
 }
@@ -633,6 +636,11 @@ pre code {
   .terminal-head {
     align-items: stretch;
     flex-direction: column;
+  }
+
+  .terminal {
+    min-height: 260px;
+    max-height: 340px;
   }
 
   .sample-result > div {
