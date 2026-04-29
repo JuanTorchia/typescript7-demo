@@ -129,7 +129,8 @@ function prepareProject(project) {
     "--loglevel",
     "error",
     "--no-save",
-    "@typescript/typescript6@6.0.0",
+    "typescript@6.0.3",
+    "@typescript/typescript6@6.0.1",
     "@typescript/native-preview@beta",
   ], { cwd: directory });
 

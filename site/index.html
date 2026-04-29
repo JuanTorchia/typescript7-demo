@@ -169,14 +169,16 @@
 
       <section class="grid" id="open-source">
         <article class="card">
-          <span class="label">Open-source baseline</span>
-          <h2>Public repos</h2>
+          <span class="label">Evidence matrix</span>
+          <h2>Public and controlled benchmarks</h2>
           <p>
             CI now checks multiple public repositories: <code>type-fest</code>,
-            <code>ts-pattern</code>, and <code>neverthrow</code>. Each project maps to a
-            different TypeScript 7 migration signal.
+            <code>ts-pattern</code>, and <code>neverthrow</code>. It also generates
+            controlled synthetic corpora for template-literal types, many modules, and
+            project references.
           </p>
           <code>npm run bench:public</code>
+          <code>npm run bench:synthetic</code>
           <code>npm run typecheck:oss:ts6</code>
           <code>npm run typecheck:oss:ts7</code>
         </article>
@@ -209,9 +211,9 @@
           <span class="label">Benchmarks</span>
           <h2>Real commands, reproducible output.</h2>
           <p>
-            The repo does not hard-code a marketing number. It runs the same commands in
-            GitHub Actions and uploads <code>benchmark-results.json</code> as an artifact,
-            so anyone can inspect the raw samples.
+            The repo does not hard-code a marketing number. It runs real public repos plus
+            generated stress corpora in GitHub Actions and uploads raw JSON artifacts, so
+            anyone can inspect the samples behind the page.
           </p>
         </div>
 
@@ -233,6 +235,12 @@
             <code>npm run typecheck:oss:ts6</code>
             <code>npm run typecheck:oss:ts7</code>
             <span>Conditional, mapped, recursive, and template-literal types.</span>
+          </div>
+          <div class="row">
+            <span>Controlled synthetic corpus</span>
+            <code>npm run bench:synthetic</code>
+            <code>npm run bench:synthetic</code>
+            <span>Generated stress cases for type-level code, import graphs, and project references.</span>
           </div>
           <div class="row">
             <span>Full verification</span>
@@ -265,8 +273,9 @@
             <h3>Latest benchmark artifacts</h3>
             <p>
               Each CI run uploads raw JSON artifacts. Open the latest run, download
-              <code>typescript-7-public-repository-benchmark</code>, and inspect the exact
-              samples behind the page.
+              <code>typescript-7-public-repository-benchmark</code> or
+              <code>typescript-7-controlled-synthetic-benchmark</code>, and inspect the
+              exact samples behind the page.
             </p>
           </div>
           <div class="artifact-actions">
@@ -288,20 +297,20 @@
         <div class="sample-result">
           <div>
             <span class="metric-label">Sample local run</span>
-            <strong>Public repo matrix</strong>
-            <small>Windows, Node 24, RUNS=3, WARMUPS=1. CI artifacts are the reproducible source.</small>
+            <strong>Controlled synthetic matrix</strong>
+            <small>Windows, Node 24, RUNS=1, WARMUPS=0. CI artifacts are the reproducible source.</small>
           </div>
           <div class="metric">
-            <span>type-fest</span>
-            <strong>1.88x</strong>
+            <span>template types</span>
+            <strong>2.57x</strong>
           </div>
           <div class="metric faster">
-            <span>ts-pattern</span>
-            <strong>4.7x</strong>
+            <span>many modules</span>
+            <strong>4.04x</strong>
           </div>
           <div class="metric">
-            <span>neverthrow</span>
-            <strong>config break</strong>
+            <span>project refs</span>
+            <strong>2.39x</strong>
           </div>
         </div>
 
@@ -371,6 +380,19 @@
 
 # writes
 benchmark-public-repos.json</code></pre>
+          </article>
+
+          <article class="example">
+            <h3>Controlled synthetic corpus</h3>
+            <p>
+              The benchmark generator creates inspectable TypeScript projects under
+              <code>.tmp/synthetic-corpus</code>: template-literal stress, thousands of
+              small modules, and a project-reference build graph.
+            </p>
+            <pre><code>npm run bench:synthetic
+
+# writes
+benchmark-synthetic.json</code></pre>
           </article>
 
           <article class="example">

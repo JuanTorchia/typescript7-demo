@@ -4,5 +4,6 @@ coverage/
 .benchmark/
 .tmp/
 benchmark-results.json
+benchmark-synthetic.json
 benchmark-public-repos.json
 npm-debug.log*

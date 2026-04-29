@@ -7,6 +7,12 @@ function run(command) {
 }
 
 describe("TypeScript 7 native preview", () => {
+  it("uses the real TypeScript 6 compiler behind tsc6", () => {
+    const version = run("node node_modules/@typescript/typescript6/bin/tsc6 --version").trim();
+
+    assert.match(version, /^Version 6\./);
+  });
+
   it("uses tsgo from @typescript/native-preview", () => {
     const version = run("node node_modules/@typescript/native-preview/bin/tsgo.js --version").trim();
 

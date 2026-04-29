@@ -33,12 +33,13 @@ Use this repo as an upgrade readiness check before TypeScript 7 becomes an upgra
 
 ## What This Proves
 
-- `tsc6` runs TypeScript 6 through `typescript: npm:@typescript/typescript6`.
+- `typescript@6` provides the real JavaScript compiler, and `@typescript/typescript6` exposes the side-by-side `tsc6` binary.
 - `tsgo` runs the TypeScript 7.0 native preview through `@typescript/native-preview`.
 - The same local TypeScript project type-checks with both compilers.
 - `isolatedDeclarations` catches public exports that need explicit annotations.
 - An open-source type-heavy fixture based on `type-fest@5.6.0` type-checks with both compilers.
 - A public-repository benchmark clones `sindresorhus/type-fest@v5.6.0`, `gvergnaud/ts-pattern@v5.9.0`, and `supermacro/neverthrow@v8.2.0`, verifies expected commits, and compares both compilers against real repos.
+- A controlled synthetic benchmark generates inspectable stress corpora for template-literal types, many modules, and project references.
 - The benchmark script compares `tsc6 --noEmit` and `tsgo --noEmit` on both the local project and the Type-Fest fixture.
 - The static site explains the safer model for private repositories: run the check in the user's own GitHub Actions environment.
 
@@ -137,13 +138,35 @@ Current matrix:
 
 It is intentionally separate from `npm run verify` because it performs network IO and takes longer than the local fixture checks.
 
-A local smoke run on Windows with Node 24, `RUNS=3`, and `WARMUPS=1` measured:
+A local smoke run on Windows with Node 24, `RUNS=1`, and `WARMUPS=0` measured:
 
-- `sindresorhus/type-fest`: TypeScript 6 median `59874ms`, TypeScript 7 native preview median `31801ms`, roughly `1.88x` faster.
-- `gvergnaud/ts-pattern`: TypeScript 6 median `1611ms`, TypeScript 7 native preview median `343ms`, roughly `4.7x` faster.
+- `sindresorhus/type-fest`: TypeScript 6 `73994ms`, TypeScript 7 native preview `45461ms`, roughly `1.63x` faster.
+- `gvergnaud/ts-pattern`: TypeScript 6 `2474ms`, TypeScript 7 native preview `685ms`, roughly `3.61x` faster.
 - `supermacro/neverthrow`: migration signal. TypeScript 6 reports deprecated options; TypeScript 7 reports those options as removed.
 
 Treat those as sample numbers only. The GitHub Actions artifact is the reproducible benchmark output for the published repo.
+
+## Controlled Synthetic Benchmark
+
+```bash
+npm run bench:synthetic
+```
+
+This generates TypeScript projects under `.tmp/synthetic-corpus` and writes `benchmark-synthetic.json`.
+
+Current generated cases:
+
+- `template-literal-stress`: template-literal routes, mapped types, and thousands of concrete route checks.
+- `many-modules`: thousands of small TypeScript modules with a long import graph.
+- `project-references`: a generated multi-package project-reference build graph.
+
+A local smoke run on Windows with Node 24, `RUNS=1`, and `WARMUPS=0` measured:
+
+- `template-literal-stress`: TypeScript 6 `44009ms`, TypeScript 7 native preview `17097ms`, roughly `2.57x` faster.
+- `many-modules`: TypeScript 6 `3468ms`, TypeScript 7 native preview `858ms`, roughly `4.04x` faster.
+- `project-references`: TypeScript 6 `1487ms`, TypeScript 7 native preview `622ms`, roughly `2.39x` faster.
+
+These are not public ecosystem proof. They are controlled stress inputs that make the benchmark easier to inspect and repeat.
 
 ## GitHub Actions
 
@@ -158,6 +181,8 @@ It also uploads `benchmark-results.json` as a workflow artifact.
 
 The workflow also runs the public repository benchmark and uploads `benchmark-public-repos.json`.
 
+It also runs the controlled synthetic benchmark and uploads `benchmark-synthetic.json`.
+
 ## Relevant Files
 
 - `src/helpers/paginated.ts`: generic helper with explicit exported types.
@@ -165,6 +190,8 @@ The workflow also runs the public repository benchmark and uploads `benchmark-pu
 - `src/helpers/object-keys.ts`: stricter `Object.keys` typing that TypeScript 7 catches.
 - `src/integration/anthropic-like.ts`: realistic async result union.
 - `oss/type-fest-usage.ts`: open-source type-heavy fixture using Type-Fest.
+- `scripts/generate-synthetic-corpus.mjs`: generated benchmark corpus for controlled stress tests.
+- `scripts/benchmark-synthetic.mjs`: TypeScript 6 versus TypeScript 7 benchmark runner for the generated corpus.
 - `fixtures/isolated-declarations/bad-export.ts`: intentionally failing fixture for `isolatedDeclarations`.
 - `test/tooling.test.mjs`: Node test suite that validates the real toolchain.
 

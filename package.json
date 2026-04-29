@@ -12,7 +12,9 @@
     "test": "node --test test/*.test.mjs",
     "site:serve": "npx --yes serve site",
     "bench": "node scripts/benchmark.mjs",
+    "bench:synthetic": "node scripts/benchmark-synthetic.mjs",
     "bench:public": "node scripts/benchmark-public-repos.mjs",
+    "bench:all": "npm run bench && npm run bench:synthetic && npm run bench:public",
     "verify": "npm run typecheck:ts6 && npm run typecheck:ts7 && npm run typecheck:isolated && npm run typecheck:oss:ts6 && npm run typecheck:oss:ts7 && npm test"
   },
   "keywords": [
@@ -25,7 +27,8 @@
   "license": "ISC",
   "devDependencies": {
     "@typescript/native-preview": "^7.0.0-dev.20260421.2",
+    "@typescript/typescript6": "^6.0.1",
     "type-fest": "^5.6.0",
-    "typescript": "npm:@typescript/typescript6@^6.0.0"
+    "typescript": "^6.0.3"
   }
 }
