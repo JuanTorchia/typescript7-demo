@@ -9,6 +9,10 @@ Important correction: the public TypeScript 7.0 beta is not installed as `typesc
 
 Official reference: <https://devblogs.microsoft.com/typescript/announcing-typescript-7-0-beta/>
 
+Live site: <https://typescript7-demo.vercel.app/>
+
+Related write-up: <https://juanchi.dev/es/blog/typescript-7-beta-benchmark-tsgo-vs-tsc6>
+
 ## Why TypeScript 7 Matters
 
 TypeScript 7 is not a normal release. Microsoft moved the compiler to a native Go foundation, added parallel compiler work, and designed the beta to run side-by-side with TypeScript 6 during migration.
